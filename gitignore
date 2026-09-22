@@ -1,0 +1,27 @@
+# Dados (nunca vai pro repositório)
+data/raw/
+*.png
+*.jpg
+*.jpeg
+*.dcm
+
+# Credenciais
+kaggle.json
+.env
+
+# Ambiente Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Resultados grandes (opcional — libere se forem pequenos e quiser versionar)
+results/*.json
+
+# SO / editor
+.DS_Store
+.vscode/
+.idea/
