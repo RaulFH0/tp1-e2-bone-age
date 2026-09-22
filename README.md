@@ -1,6 +1,6 @@
 # TP1 · E2 · Parte do Raul (literatura, HOG, treinamento)
 
-Repositório: https://github.com/RaulFH0/-tp1-e2-bone-age
+Repositório: https://github.com/RaulFH0/tp1-e2-bone-age
 
 ## Estrutura esperada
 ```
