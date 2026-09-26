@@ -8,10 +8,10 @@ o restante do pipeline sem mudanca de codigo.
 
 Premissas sobre o dataset (kaggle: kmader/rsna-bone-age):
 - boneage-train-dataset.csv com colunas: id, boneage (meses), male (bool/0-1)
-- cada linha = um exame/paciente unico (nao ha exames repetidos do mesmo paciente
-  nesse dataset em particular) -> split por "id" already equivale a split por paciente.
-  Se a equipe descobrir IDs de paciente repetidos na EDA do Carlos, ajuste aqui
-  usando GroupShuffleSplit por paciente em vez de train_test_split simples.
+- "id" identifica imagem/exame. Sem uma coluna verificavel de paciente, este
+  script NAO comprova separacao por paciente. Consulte 00_audit_data.py antes
+  de descrever a particao como definitiva; se houver patient_id, use um split
+  por grupos de paciente.
 
 Estratificacao: por faixa etaria (bins de 24 meses) + sexo, para manter a
 distribuicao de idade e sexo semelhante nas 3 particoes.

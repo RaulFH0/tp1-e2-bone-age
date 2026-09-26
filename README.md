@@ -1,4 +1,4 @@
-# TP1 · E2 · Parte do Raul (literatura, HOG, treinamento)
+# TP1 · E2 · Baseline de idade óssea (equipe)
 
 Repositório: https://github.com/RaulFH0/tp1-e2-bone-age
 
@@ -12,6 +12,7 @@ tp1_e2/
 │   └── splits/          (gerado pelo script 01)
 ├── results/              (gerado pelo script 02)
 ├── src/
+│   ├── 00_audit_data.py
 │   ├── 01_split_data.py
 │   └── 02_hog_baseline.py
 └── requirements.txt
@@ -41,6 +42,12 @@ pip install -r requirements.txt
 
 ## Execução
 ```bash
+# 0. Carlos: auditar rótulos, imagens e possibilidade de agrupamento por paciente
+python src/00_audit_data.py \
+    --csv data/raw/boneage-train-dataset.csv \
+    --images-dir data/raw/boneage-train-dataset/boneage-train-dataset \
+    --out results/data_audit.json
+
 # 1. Split provisório treino/val/teste (semente fixa = 42)
 python src/01_split_data.py \
     --csv data/raw/boneage-train-dataset.csv \
@@ -60,12 +67,12 @@ média do treino, no conjunto de validação.
 ## Uso via Google Colab
 Se preferir rodar no Colab em vez de local, numa célula nova:
 ```python
-!git clone https://github.com/RaulFH0/-tp1-e2-bone-age.git
-%cd -tp1-e2-bone-age
+!git clone https://github.com/RaulFH0/tp1-e2-bone-age.git
+%cd tp1-e2-bone-age
 !pip install -r requirements.txt
 !kaggle datasets download -d kmader/rsna-bone-age -p data/raw --unzip
 ```
-Depois é só rodar as mesmas duas linhas de `python src/01_...` e `python src/02_...`
+Depois é só rodar as mesmas linhas de `python src/00_...`, `src/01_...` e `src/02_...`
 com `!` na frente (`!python src/01_split_data.py ...`).
 
 Se editar algo direto no Colab, baixe o notebook (File → Download → .ipynb) e
@@ -77,7 +84,16 @@ deixe a única cópia só dentro do Colab.
   faixa etária + sexo com semente fixa, só para destravar o trabalho antes da
   partição oficial da equipe (responsabilidade do Carlos Daniel) existir.
   Assim que a oficial for definida, troque os CSVs em `data/splits/` — o
-  restante do pipeline não muda.
+  restante do pipeline não muda. O CSV padrão inclui `id`, `boneage` e `male`;
+  `id` identifica uma imagem/exame, mas não prova que pacientes não se repetem.
+  Verifique `results/data_audit.json`: se `patient_grouping.status` for
+  `not_verifiable`, documente essa limitação e valide o protocolo com a equipe
+  e o professor antes de chamar essa partição de "por paciente".
+- **Auditoria de Carlos**: `00_audit_data.py` confere colunas, IDs duplicados,
+  idades, sexo, correspondência `<id>.png`, uma amostra dos tamanhos das PNG e
+  informa se há uma coluna explícita `patient_id`. O script não copia imagens
+  nem dados brutos para o repositório. Para testar com dados pequenos, execute
+  `python -m unittest discover -s tests -v`.
 - **Nomes de arquivo de imagem**: o script assume `<id>.png`. Confira o
   formato real após o download e ajuste `02_hog_baseline.py` se necessário.
 - **Sem vazamento de dados**: o `StandardScaler` é ajustado (`fit`) somente
