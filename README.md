@@ -115,3 +115,30 @@ O script `src/02_preprocess.py` lê os IDs congelados em `data/splits/`, convert
 São 21 características por imagem, identificadas pelo ID original. A execução no Colab gerou 2.800, 600 e 600 linhas; os 4.000 IDs foram conferidos com a amostra. Os CSVs de características e as imagens brutas não são enviados ao Git.
 
 A base utilizada não fornece uma chave verificável de paciente. Por isso, a ausência de IDs de imagem repetidos não comprova separação por paciente; o protocolo da divisão ainda depende de revisão metodológica pela equipe.
+
+### Mesma imagem para HOG, textura e intensidade
+
+`src/image_preprocessing.py` expõe `preprocess_image(caminho_png)`. Ela devolve
+uma matriz `float32` de 224 × 224 com pixels entre 0 e 1: conversão para cinza
+com Pillow (`L`), redimensionamento Lanczos e divisão por 255. Não aplica
+recorte, remoção de fundo ou ajuste de contraste. A textura em
+`src/02_preprocess.py` usa essa função antes de calcular LBP/GLCM.
+
+Em um script dentro de `src/`, Raul e Rílari podem usar exatamente a mesma
+imagem de entrada, por exemplo:
+
+```python
+from image_preprocessing import preprocess_image
+
+image = preprocess_image(images_dir / f"{image_id}.png")
+# Passe image à extração HOG ou intensidade.
+```
+
+**Atenção:** `src/02_hog_baseline.py` ainda tem processamento próprio em
+256 × 256 com scikit-image. Seus resultados anteriores não são diretamente
+comparáveis aos descritores de textura de 224 × 224. Para a comparação final,
+substitua sua função `load_image_gray` pela chamada a `preprocess_image` acima,
+execute novamente o treino/avaliação do HOG e registre o protocolo utilizado.
+Os IDs de 4.000 imagens e a semente 42 estão congelados para execução, mas
+a equipe ainda precisa revisar a limitação de agrupamento por paciente antes
+de chamar a partição de oficial.

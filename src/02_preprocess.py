@@ -5,21 +5,18 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from PIL import Image
 from skimage.feature import graycomatrix, graycoprops, local_binary_pattern
 
-SIZE = (224, 224)
+from image_preprocessing import preprocess_image
+
 GLCM_PROPERTIES = (
     "contrast", "dissimilarity", "homogeneity", "energy", "correlation"
 )
 
 
-def extract_features(image_path):
-    with Image.open(image_path) as source:
-        image = source.convert("L").resize(SIZE, Image.Resampling.LANCZOS)
-        pixels = np.asarray(image, dtype=np.uint8)
-
-    normalized = pixels.astype(np.float32) / 255.0
+def extract_features(normalized_image):
+    """Extrai textura da mesma imagem usada pelos demais descritores."""
+    pixels = np.rint(normalized_image * 255).astype(np.uint8)
 
     lbp = local_binary_pattern(pixels, P=8, R=1, method="uniform")
     counts = np.bincount(lbp.astype(np.int64).ravel(), minlength=10)[:10]
@@ -43,7 +40,7 @@ def extract_features(image_path):
         features[f"glcm_{name}_mean"] = float(values.mean())
         features[f"glcm_{name}_std"] = float(values.std())
 
-    features["pixel_mean"] = float(normalized.mean())
+    features["pixel_mean"] = float(normalized_image.mean())
     return features
 
 
@@ -78,7 +75,7 @@ def main():
         for image_id in ids:
             rows.append({
                 "id": image_id,
-                **extract_features(args.images / f"{image_id}.png"),
+                **extract_features(preprocess_image(args.images / f"{image_id}.png")),
             })
         destination = args.output / f"texture_{name}.csv"
         pd.DataFrame(rows).to_csv(destination, index=False)
