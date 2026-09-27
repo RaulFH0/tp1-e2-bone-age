@@ -101,3 +101,17 @@ deixe a única cópia só dentro do Colab.
   descritores e modelos futuros (textura, intensidade, RF, GB).
 - **Versões**: registre a versão exata de cada pacote (`pip freeze >
   requirements-lock.txt`) antes da entrega final, para reprodutibilidade.
+
+## Amostra RSNA e extração de textura
+
+Foi selecionada uma amostra de 4.000 das 12.611 imagens, com semente 42 e estratificação por faixa de idade óssea e sexo. Os IDs foram divididos em treino (2.800), validação (600) e teste (600), sem repetição de IDs de imagem.
+
+O script `src/02_preprocess.py` lê os IDs congelados em `data/splits/`, converte cada PNG para escala de cinza, redimensiona para 224 × 224 pixels com Lanczos e calcula:
+
+- LBP uniforme: 8 pontos, raio 1, histograma de 10 valores;
+- GLCM: 16 níveis de cinza, distâncias 1 e 2, ângulos 0°, 45°, 90° e 135°; média e desvio de cinco propriedades;
+- média dos pixels normalizados para o intervalo de 0 a 1.
+
+São 21 características por imagem, identificadas pelo ID original. A execução no Colab gerou 2.800, 600 e 600 linhas; os 4.000 IDs foram conferidos com a amostra. Os CSVs de características e as imagens brutas não são enviados ao Git.
+
+A base utilizada não fornece uma chave verificável de paciente. Por isso, a ausência de IDs de imagem repetidos não comprova separação por paciente; o protocolo da divisão ainda depende de revisão metodológica pela equipe.
