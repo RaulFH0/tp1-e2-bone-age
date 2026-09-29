@@ -18,8 +18,9 @@ __pycache__/
 # Notebooks
 .ipynb_checkpoints/
 
-# Resultados grandes (opcional — libere se forem pequenos e quiser versionar)
-results/*.json
+# Resultados e cache de features (locais, nao versionar por enquanto)
+results/
+*.joblib
 
 # SO / editor
 .DS_Store

@@ -1,101 +1,81 @@
-"""
-01_split_data.py
+"""Partição provisória e reprodutível da amostra RSNA Bone Age.
 
-Gera uma particao treino/validacao/teste PROVISORIA para o TP1 (RSNA Bone Age),
-enquanto a particao oficial da equipe (responsabilidade do Carlos Daniel) nao
-estiver congelada. Assim que a oficial existir, troque por ela e reaproveite
-o restante do pipeline sem mudanca de codigo.
-
-Premissas sobre o dataset (kaggle: kmader/rsna-bone-age):
-- boneage-train-dataset.csv com colunas: id, boneage (meses), male (bool/0-1)
-- cada linha = um exame/paciente unico (nao ha exames repetidos do mesmo paciente
-  nesse dataset em particular) -> split por "id" already equivale a split por paciente.
-  Se a equipe descobrir IDs de paciente repetidos na EDA do Carlos, ajuste aqui
-  usando GroupShuffleSplit por paciente em vez de train_test_split simples.
-
-Estratificacao: por faixa etaria (bins de 24 meses) + sexo, para manter a
-distribuicao de idade e sexo semelhante nas 3 particoes.
-
-Saida: train_ids.csv, val_ids.csv, test_ids.csv em data/splits/
+Usa somente os IDs listados em sample_ids.csv, com 70% treino, 15%
+validação e 15% teste, estratificando por quatro faixas de idade óssea
+e sexo (semente 42). O campo id identifica imagem/exame, não paciente:
+esta partição NÃO comprova separação por paciente e precisa de revisão
+metodológica da equipe antes de ser tratada como definitiva.
 """
 
 import argparse
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+
 RANDOM_SEED = 42
-TRAIN_FRAC = 0.70
-VAL_FRAC = 0.15
-TEST_FRAC = 0.15
-AGE_BIN_WIDTH_MONTHS = 24
+AGE_BINS = [0, 72, 132, 192, 240]
+AGE_LABELS = ["0-5", "6-10", "11-15", "16-19"]
 
 
-def make_strata(df: pd.DataFrame) -> pd.Series:
-    age_bin = (df["boneage"] // AGE_BIN_WIDTH_MONTHS).astype(int)
-    sex = df["male"].astype(int)
-    return age_bin.astype(str) + "_" + sex.astype(str)
+def split_sample(csv_path: str, sample_ids_path: str, out_dir: str) -> None:
+    labels = pd.read_csv(csv_path)
+    sample_ids = pd.read_csv(sample_ids_path)
 
+    required = {"id", "boneage", "male"}
+    if missing := required - set(labels.columns):
+        raise ValueError(f"Colunas ausentes no CSV de rótulos: {sorted(missing)}")
+    if list(sample_ids.columns) != ["id"]:
+        raise ValueError("sample_ids.csv deve conter apenas a coluna id")
+    if labels["id"].isna().any() or labels["id"].duplicated().any():
+        raise ValueError("IDs inválidos ou duplicados no CSV de rótulos")
+    if sample_ids.empty or sample_ids["id"].isna().any() or sample_ids["id"].duplicated().any():
+        raise ValueError("Amostra vazia ou com IDs inválidos/duplicados")
 
-def main(csv_path: str, out_dir: str):
-    df = pd.read_csv(csv_path)
-    required_cols = {"id", "boneage", "male"}
-    missing = required_cols - set(df.columns)
-    if missing:
-        raise ValueError(
-            f"Colunas esperadas ausentes no CSV: {missing}. "
-            f"Confira o nome real das colunas do boneage-train-dataset.csv."
-        )
+    missing_ids = sorted(set(sample_ids["id"]) - set(labels["id"]))
+    if missing_ids:
+        raise ValueError(f"IDs da amostra ausentes no CSV de rótulos: {missing_ids[:5]}")
 
-    strata = make_strata(df)
+    data = (
+        sample_ids.merge(labels, on="id", validate="one_to_one")
+                  .sort_values("id")
+                  .reset_index(drop=True)
+    )
+    data["faixa"] = pd.cut(
+        data["boneage"], bins=AGE_BINS, right=False, labels=AGE_LABELS
+    )
+    if data[["faixa", "male"]].isna().any().any():
+        raise ValueError("Amostra contém idade óssea ou sexo ausente/inválido")
+    data["estrato"] = data["faixa"].astype(str) + "_" + data["male"].astype(str)
 
-    # Remove estratos com menos de 2 membros (train_test_split estratificado exige >=2)
-    strata_counts = strata.value_counts()
-    valid_mask = strata.isin(strata_counts[strata_counts >= 2].index)
-    df_valid = df[valid_mask].reset_index(drop=True)
-    strata_valid = strata[valid_mask].reset_index(drop=True)
-    n_dropped = len(df) - len(df_valid)
-    if n_dropped:
-        print(f"Aviso: {n_dropped} exames em estratos raros ficaram de fora "
-              f"da estratificacao (foram mantidos via split simples ao final).")
-
-    train_df, temp_df, strata_train, strata_temp = train_test_split(
-        df_valid, strata_valid,
-        train_size=TRAIN_FRAC,
-        random_state=RANDOM_SEED,
-        stratify=strata_valid,
+    train, rest = train_test_split(
+        data, test_size=0.30, random_state=RANDOM_SEED,
+        stratify=data["estrato"],
+    )
+    val, test = train_test_split(
+        rest, test_size=0.50, random_state=RANDOM_SEED,
+        stratify=rest["estrato"],
     )
 
-    val_ratio_within_temp = VAL_FRAC / (VAL_FRAC + TEST_FRAC)
-    val_df, test_df = train_test_split(
-        temp_df,
-        train_size=val_ratio_within_temp,
-        random_state=RANDOM_SEED,
-        stratify=strata_temp,
-    )
+    parts = {"train": train, "val": val, "test": test}
+    sets = [set(part["id"]) for part in parts.values()]
+    if set.union(*sets) != set(sample_ids["id"]) or sum(map(len, sets)) != len(data):
+        raise AssertionError("Partição contém IDs repetidos ou não cobre a amostra")
 
-    out_path = Path(out_dir)
-    out_path.mkdir(parents=True, exist_ok=True)
-    train_df[["id"]].to_csv(out_path / "train_ids.csv", index=False)
-    val_df[["id"]].to_csv(out_path / "val_ids.csv", index=False)
-    test_df[["id"]].to_csv(out_path / "test_ids.csv", index=False)
-
-    print(f"Split salvo em {out_path}/")
-    print(f"  train: {len(train_df)}  val: {len(val_df)}  test: {len(test_df)}")
-    print(f"  semente fixa: {RANDOM_SEED}")
+    output = Path(out_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    for name, part in parts.items():
+        target = output / f"{name}_ids.csv"
+        part[["id"]].sort_values("id").to_csv(target, index=False)
+        print(f"{name}: {len(part)} IDs -> {target}")
+    print(f"Semente: {RANDOM_SEED}; separação por paciente: não verificável")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--csv", default="data/raw/boneage-train-dataset.csv",
-        help="Caminho para o CSV com id, boneage, male",
-    )
-    parser.add_argument(
-        "--out", default="data/splits",
-        help="Pasta de saida para train_ids.csv / val_ids.csv / test_ids.csv",
-    )
+    parser.add_argument("--csv", default="data/raw/boneage-train-dataset.csv")
+    parser.add_argument("--sample-ids", default="data/splits/sample_ids.csv")
+    parser.add_argument("--out", default="data/splits")
     args = parser.parse_args()
-    main(args.csv, args.out)
+    split_sample(args.csv, args.sample_ids, args.out)
