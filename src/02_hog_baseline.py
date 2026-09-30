@@ -13,11 +13,23 @@ Uso tipico:
         --out-dir results
 
 Parametros do HOG documentados abaixo (registrar no artigo, secao Metodologia):
-    - imagem redimensionada para IMG_SIZE x IMG_SIZE (grayscale)
+    - imagem de entrada: preprocess_image (comum a HOG, textura e intensidade),
+      224x224, escala de cinza, sem recorte/remocao de fundo/realce de contraste
     - orientations=9, pixels_per_cell=(16,16), cells_per_block=(2,2)
     - feature_vector=True
 
 O sexo (coluna "male") entra como covariavel explicita, concatenada ao vetor HOG.
+
+IMPORTANTE: usa a particao oficial da equipe (4.000 imagens, semente 42,
+2.800/600/600) e a funcao preprocess_image definida por Carlos Daniel em
+image_preprocessing.py -- os tres descritores (HOG, textura, intensidade)
+precisam ver exatamente os mesmos pixels para a comparacao final fazer sentido.
+
+LIMITACAO REGISTRADA PELA EQUIPE: os arquivos da base nao trazem uma chave
+verificavel de paciente. As particoes nao repetem ID de imagem entre si, mas
+isso nao comprova separacao por paciente -- registrar essa limitacao na secao
+de Metodologia/Limitacoes do artigo, nao apresentar a particao como "por
+paciente".
 """
 
 import argparse
@@ -28,13 +40,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from skimage.feature import hog
-from skimage.io import imread
-from skimage.transform import resize
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 
-IMG_SIZE = 256
+from image_preprocessing import preprocess_image 
+
 HOG_PARAMS = dict(
     orientations=9,
     pixels_per_cell=(16, 16),
@@ -44,20 +55,15 @@ HOG_PARAMS = dict(
 RANDOM_SEED = 42
 
 
-def load_image_gray(path: Path) -> np.ndarray:
-    img = imread(path, as_gray=True)
-    img = resize(img, (IMG_SIZE, IMG_SIZE), anti_aliasing=True)
-    return img
-
-
 def extract_features(ids, images_dir: Path, meta: pd.DataFrame) -> np.ndarray:
-    """Extrai HOG + covariavel sexo para uma lista de ids."""
+    """Extrai HOG + covariavel sexo para uma lista de ids, usando o
+    preprocess_image comum (224x224, escala de cinza, normalizado em [0,1])."""
     feats = []
     meta_idx = meta.set_index("id")
     for img_id in ids:
         # Ajuste a extensao (.png) conforme o formato real dos arquivos baixados
         img_path = images_dir / f"{img_id}.png"
-        img = load_image_gray(img_path)
+        img = preprocess_image(img_path)
         hog_feat = hog(img, **HOG_PARAMS)
         sex = float(meta_idx.loc[img_id, "male"])
         feats.append(np.concatenate([hog_feat, [sex]]))
@@ -115,7 +121,8 @@ def main(images_dir: str, csv_path: str, splits_dir: str, out_dir: str):
         "n_train": len(train_ids),
         "n_val": len(val_ids),
         "hog_params": HOG_PARAMS,
-        "img_size": IMG_SIZE,
+        "preprocess": "image_preprocessing.preprocess_image (224x224, grayscale, [0,1])",
+        "split_oficial": "4000 imagens, semente 42, 2800/600/600 (Carlos Daniel)",
         "random_seed": RANDOM_SEED,
     }
 
