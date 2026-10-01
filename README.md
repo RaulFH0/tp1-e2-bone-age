@@ -178,3 +178,26 @@ Saída: `results/metrics_hog_comparacao_modelos.json`.
 | **Gradient Boosting** | **22,62** | **29,93** | **0,48** |
 
 > **Importante**: sempre que `preprocess_image` ou os IDs congelados mudarem, apague os caches (`results/*.joblib`) antes de rodar de novo — features extraídas com uma versão antiga do preprocessamento não são comparáveis com os outros descritores da equipe.
+
+## Notebook de entrega das matrizes de textura
+
+Execute `notebooks/02_texture_extraction.ipynb` no Google Colab.
+O notebook utiliza o código do commit `888551893ef0667ea9d55835d5f0c2c47d6568bf`
+e os IDs congelados em `data/splits/`, sem recriar a amostra ou a divisão.
+
+A execução foi concluída com 2.800 imagens de treino, 600 de validação
+e 600 de teste. Cada matriz contém `id` e 20 características de textura:
+10 de LBP e 10 de GLCM, na mesma ordem dos IDs de cada split.
+A característica adicional `pixel_mean` do extrator foi excluída desta entrega.
+
+O pré-processamento comum converte para cinza, redimensiona para
+224 × 224 com Lanczos e normaliza por 255, sem recorte ou remoção de fundo.
+Os parâmetros completos, versões e hashes estão documentados no pacote gerado.
+
+Saída: `matrizes_textura_RSNA_4000.zip`, com matrizes, rótulos alinhados,
+IDs, scripts, documentação e manifesto de verificação.
+O ZIP é compartilhado diretamente com a equipe e permanece fora do Git.
+
+A semente da amostragem e divisão é 42. A ausência de IDs de imagem
+repetidos não comprova separação por paciente, pois a base não fornece
+uma chave verificável de paciente.
