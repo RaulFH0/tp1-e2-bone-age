@@ -1,6 +1,7 @@
+Pillow
+joblib
+matplotlib
 numpy
 pandas
-scikit-learn
 scikit-image
-joblib
-Pillow
+scikit-learn
