@@ -111,7 +111,7 @@ def main(images_dir: str, csv_path: str, splits_dir: str, out_dir: str):
     y_pred_train = model.predict(X_train_scaled)
     y_pred_val = model.predict(X_val_scaled)
 
-    # Baseline trivial para referencia local (o oficial e responsabilidade da Rilari)
+    # Baseline trivial: media das idades do treino para referencia local
     baseline_pred_val = np.full_like(y_val, fill_value=y_train.mean(), dtype=float)
 
     metrics = {

@@ -12,6 +12,7 @@ from pathlib import Path
 import platform
 import subprocess
 import sys
+import time
 
 import numpy as np
 import pandas as pd
@@ -64,8 +65,11 @@ def evaluate_folds(X, y, ids, folds, models, family):
         for name, estimator in models.items():
             model = Pipeline([("scaler", StandardScaler()), ("model", clone(estimator))])
             print(f"{family}: dobra {fold_id}/{len(folds)}, {name}", flush=True)
+            started = time.monotonic()
             model.fit(X[train], y[train])
             predictions[name] = model.predict(X[validation])
+            print(f"{family}: dobra {fold_id}/{len(folds)}, {name} concluído em "
+                  f"{time.monotonic() - started:.1f}s", flush=True)
         for name, predicted in predictions.items():
             scores[name].append(metrics(y[validation], predicted))
             for row, value in zip(validation, predicted):

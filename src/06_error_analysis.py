@@ -1,11 +1,8 @@
 """
 06_error_analysis.py
 
-CONTINGENCIA: protocolo, metricas e analise de erro eram responsabilidade da
-Rilari, conforme o plano original da equipe. Como ela nao respondeu aos
-pedidos de status as vesperas da entrega, Raul implementou esta versao para
-nao travar o artigo. Se a Rilari enviar sua propria analise antes da
-entrega, ela deve revisar/substituir este script.
+Analise de erro para o pipeline HOG + Gradient Boosting.
+Implementacao por Raul.
 
 Gera, para o MELHOR modelo encontrado ate agora (HOG + Gradient Boosting):
     1. Grafico de Bland-Altman (media vs. diferenca entre previsto e real)
@@ -153,8 +150,7 @@ def main(images_dir: str, csv_path: str, splits_dir: str, out_dir: str):
 
     result = {
         "_nota": (
-            "Analise de erro implementada por Raul como contingencia "
-            "(Rilari nao respondeu). Revisar/substituir se ela enviar versao propria."
+            "Analise de erro implementada por Raul para HOG + Gradient Boosting."
         ),
         "modelo": "HOG + Gradient Boosting",
         "bland_altman": ba_stats,

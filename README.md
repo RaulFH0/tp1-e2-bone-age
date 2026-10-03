@@ -1,260 +1,111 @@
-# TP1 · E2 · Baseline de idade óssea (equipe)
+# TP1 E2 — Idade óssea RSNA
 
-Repositório: https://github.com/RaulFH0/tp1-e2-bone-age
+Baseline de regressão com textura LBP/GLCM, HOG e intensidade. Autores do artigo: Carlos Daniel Reis da Silva e Raul Ferreira Holanda.
 
-## Estrutura esperada
+## Protocolo e números reportados
 
-```
-tp1_e2/
-├── data/
-│   ├── raw/
-│   │   ├── boneage-train-dataset.csv
-│   │   └── boneage-train-dataset/boneage-train-dataset/*.png
-│   └── splits/          (IDs congelados — 4.000 imagens, semente 42, 2.800/600/600)
-├── results/              (gerado pelos scripts 00, 02, 03, 04)
-├── src/
-│   ├── 00_audit_data.py
-│   ├── 01_split_data.py         (split provisório — superado pelos IDs congelados)
-│   ├── 02_hog_baseline.py       (Raul — HOG + SVR)
-│   ├── 02_preprocess.py         (Carlos — textura: LBP + GLCM)
-│   ├── 03_tune_svr.py           (Raul — ajuste de hiperparâmetro do SVR)
-│   ├── 04_compare_models.py     (Raul — SVR × Random Forest × Gradient Boosting)
-│   └── image_preprocessing.py   (Carlos — preprocess_image, comum a todos os descritores)
-└── requirements.txt
-```
+- Base: kmader/rsna-bone-age/versions/2, 12.611 radiografias de treino público.
+- Amostra: 4.000 imagens, semente 42, estratificação por sexo e idade em [0,72), [72,132), [132,192) e [192,240) meses.
+- IDs congelados em data/splits/: treino 2.800, validação 600, teste 600. Os arquivos são a referência de ordem e inclusão; não sobrescrevê-los durante a reprodução.
+- Comparação do artigo: três dobras estratificadas, semente 42, apenas nos 2.800 IDs de treino. Scaler e baseline da média ajustados no treino de cada dobra.
+- HOG + Gradient Boosting com sexo: MAE interno de **22,21 ± 0,85 meses**; média do treino: **33,83 ± 0,99 meses**. Média e desvio amostral entre dobras; não são métricas do teste externo.
+- Sem chave verificável de paciente. O modo --allow-image-folds registra um protocolo provisório por imagem; não comprova independência por paciente nem autorização do professor. Uma chave id,patient_id permite --groups-csv, com verificação de grupos entre partições.
 
-Dados brutos (`data/raw/`) **não vão** para o repositório — só o caminho para obtê-los (ver seção "Origem dos dados").
+## Reprodução completa em sessão limpa do Colab
 
-## Origem dos dados
+Após integrar os arquivos desta versão na main, abrir notebooks/03_fechamento_cv_ablacao.ipynb no Google Colab e executar a única célula de código em uma sessão nova. Ela:
 
-Dataset: RSNA Pediatric Bone Age Challenge (2017), disponibilizado no Kaggle como `kmader/rsna-bone-age`.
+1. Clona uma cópia isolada da main e registra o commit.
+2. Instala requirements-colab.txt e executa os testes.
+3. Obtém a versão 2 da base pelo KaggleHub e localiza os arquivos sem assumir /kaggle/input nem um ID específico de imagem.
+4. Gera data_audit.json sobre os rótulos e as imagens reais.
+5. Refaz a textura dos 4.000 IDs congelados, com 20 características e metadados alinhados. Não exige ZIP de textura nem ZIP de correção externo.
+6. Executa CV de três famílias × três modelos, baseline e ablação de textura 224/128. Os 600 IDs de validação e os 600 de teste não entram no treinamento ou seleção dessa execução.
+7. Gera tabelas, previsões OOF, Bland–Altman, dispersão, erro por faixa e radiografias ilustrativas; compara as métricas novas com a referência versionada.
+8. Disponibiliza verificacao_limpa_TP1.zip. Salvar o ZIP e uma cópia do notebook executado.
 
-```bash
-pip install kaggle
-kaggle datasets download -d kmader/rsna-bone-age -p data/raw --unzip
-```
+O download tem aproximadamente 9,3 GiB. A CV pode demorar horas em CPU. O log informa a extração, o início e a conclusão de cada modelo/dobra. As porcentagens gerais indicam etapas concluídas; não estimam o tempo restante. O processamento ocorre na máquina do Colab quando o notebook é usado lá.
 
-Requer aceitar os termos do dataset na página do Kaggle antes do primeiro download, e um token de API (`~/.kaggle/kaggle.json`).
+O KaggleHub pode exigir autenticação/aceitação de termos para acessar a base. Nesse caso, concluir a autenticação no ambiente de execução e repetir o comando; credenciais ficam fora do Git. Não trocar silenciosamente de versão ou conjunto de dados.
 
-## Setup
+## Execução local equivalente
 
-```bash
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+Python 3.12 ou 3.13. A execução original usou Python 3.13.15; as versões diretas do projeto estão fixadas.
 
-## Execução
+    git clone https://github.com/RaulFH0/tp1-e2-bone-age.git
+    cd tp1-e2-bone-age
+    python -m venv .venv
 
-```bash
-# 0. Carlos: auditar rótulos, imagens e possibilidade de agrupamento por paciente
-python src/00_audit_data.py \
-    --csv data/raw/boneage-train-dataset.csv \
-    --images-dir data/raw/boneage-train-dataset/boneage-train-dataset \
-    --out results/data_audit.json
+Ativar o ambiente no Windows PowerShell:
 
-# 1. Split provisório (histórico — a partição em uso é a congelada em data/splits/)
-python src/01_split_data.py \
-    --csv data/raw/boneage-train-dataset.csv \
-    --out data/splits
+    .\.venv\Scripts\Activate.ps1
 
-# 2. HOG + SVR (Raul)
-python src/02_hog_baseline.py \
-    --images-dir data/raw/boneage-train-dataset/boneage-train-dataset \
-    --csv data/raw/boneage-train-dataset.csv \
-    --splits-dir data/splits \
-    --out-dir results
-```
+No Linux/macOS:
 
-Saída: `results/metrics_hog_svr.json` com MAE/RMSE/R² do SVR+HOG comparado à média do treino, no conjunto de validação.
+    source .venv/bin/activate
 
-## Uso via Google Colab
+Instalar e verificar:
 
-Se preferir rodar no Colab em vez de local, numa célula nova:
+    python -m pip install -r requirements-colab.txt
+    python -m unittest discover -s tests -v
+    python src/10_reproduce_from_raw.py --allow-image-folds
 
-```python
-!git clone https://github.com/RaulFH0/tp1-e2-bone-age.git
-%cd tp1-e2-bone-age
-!pip install -r requirements.txt
-!kaggle datasets download -d kmader/rsna-bone-age -p data/raw --unzip
-```
+Se a versão 2 já estiver extraída, informar a pasta que contém o CSV e as subpastas das imagens:
 
-Depois é só rodar as mesmas linhas de `python src/00_...`, `src/01_...` e `src/02_...` com `!` na frente (`!python src/01_split_data.py ...`).
+    python src/10_reproduce_from_raw.py --dataset-dir data/raw/rsna-bone-age-v2 --allow-image-folds
 
-Se editar algo direto no Colab, baixe o notebook (File → Download → .ipynb) e suba de volta pro repositório via `git add` / `git commit` / `git push` — nunca deixe a única cópia só dentro do Colab.
+O nome do CSV do Kaggle é boneage-training-dataset.csv; a pasta pode ter dois níveis boneage-training-dataset. O script descobre a pasta por correspondência com os IDs dos rótulos. Não mover, copiar ou descompactar imagens dentro de data/splits/.
 
-## Observações importantes
+Para executar somente a auditoria, sem extração nem treinamento:
 
-- **Split provisório**: `01_split_data.py` faz um split estratificado por faixa etária + sexo com semente fixa, só para destravar o trabalho antes da partição oficial da equipe existir. A partição em uso agora é a congelada em `data/splits/` (ver seção abaixo) — o restante do pipeline não muda. O CSV padrão inclui `id`, `boneage` e `male`; `id` identifica uma imagem/exame, mas não prova que pacientes não se repetem. Verifique `results/data_audit.json`: se `patient_grouping.status` for `not_verifiable`, documente essa limitação e valide o protocolo com a equipe e o professor antes de chamar essa partição de "por paciente".
-- **Auditoria de Carlos**: `00_audit_data.py` confere colunas, IDs duplicados, idades, sexo, correspondência `<id>.png`, uma amostra dos tamanhos das PNG e informa se há uma coluna explícita `patient_id`. O script não copia imagens nem dados brutos para o repositório. Para testar com dados pequenos, execute `python -m unittest discover -s tests -v`.
-- **Nomes de arquivo de imagem**: o script assume `<id>.png`. Confira o formato real após o download.
-- **Sem vazamento de dados**: o `StandardScaler` é ajustado (`fit`) somente no treino; a validação só usa `transform`. Mantenha esse padrão em todos os descritores e modelos.
-- **Versões**: registre a versão exata de cada pacote (`pip freeze > requirements-lock.txt`) antes da entrega final, para reprodutibilidade.
+    python src/10_reproduce_from_raw.py --audit-only
 
-## Amostra RSNA e extração de textura
+Resultados ficam em results/reproducibilidade/; o ZIP fica em results/verificacao_limpa_TP1.zip. Dados brutos, caches e resultados completos permanecem fora do Git.
 
-Foi selecionada uma amostra de 4.000 das 12.611 imagens, com semente 42 e estratificação por faixa de idade óssea e sexo. Os IDs foram divididos em treino (2.800), validação (600) e teste (600), sem repetição de IDs de imagem.
+## Recuperar e conferir resultados existentes
 
-O script `src/02_preprocess.py` lê os IDs congelados em `data/splits/`, converte cada PNG para escala de cinza, redimensiona para 224 × 224 pixels com Lanczos e calcula:
+A execução original já foi concluída e auditada. Não é preciso repeti-la apenas para consultar números ou gerar novamente gráficos. Extrair o pacote salvo resultados_fechamento_TP1.zip em results/cv/ e executar:
 
-- **LBP uniforme**: 8 pontos, raio 1, histograma de 10 valores;
-- **GLCM**: 16 níveis de cinza, distâncias 1 e 2, ângulos 0°, 45°, 90° e 135°; média e desvio de cinco propriedades;
-- **Intensidade**: média dos pixels normalizados para o intervalo de 0 a 1.
+    python src/09_oof_error_analysis.py --predictions results/cv/predictions_oof.csv --out-dir results/analise_oof
 
-São 21 características por imagem, identificadas pelo ID original. A execução no Colab gerou 2.800, 600 e 600 linhas; os 4.000 IDs foram conferidos com a amostra. Os CSVs de características e as imagens brutas não são enviados ao Git.
+Esse comando usa previsões existentes e não treina modelos. SHA-256 do pacote original: 6c95a1d3c6f1ccaf9cfe07f9b62a8d763132e81a308c2390ebaee0855461c4c3.
 
-> **Limitação registrada**: a base utilizada não fornece uma chave verificável de paciente. Por isso, a ausência de IDs de imagem repetidos não comprova separação por paciente; o protocolo da divisão ainda depende de revisão metodológica pela equipe.
+Referências versionadas: docs/resultados_oof/ e docs/figuras/. A verificação completa a partir das imagens é o fluxo do script 10; regenerar gráficos a partir de OOF é uma verificação parcial distinta.
 
-## Mesma imagem para HOG, textura e intensidade
+## Pixels, descritores e modelos
 
-`src/image_preprocessing.py` expõe `preprocess_image(caminho_png)`. Ela devolve uma matriz `float32` de 224 × 224 com pixels entre 0 e 1: conversão para cinza com Pillow (`L`), redimensionamento Lanczos e divisão por 255. Não aplica recorte, remoção de fundo ou ajuste de contraste. A textura em `src/02_preprocess.py` usa essa função antes de calcular LBP/GLCM.
+src/image_preprocessing.py: cinza Pillow L, Lanczos 224×224, float32/255; sem recorte, remoção de fundo ou realce. A ablação muda a resolução para 128×128 no pipeline de textura.
 
-Em um script dentro de `src/`, qualquer integrante pode usar exatamente a mesma imagem de entrada:
+| Família | Parâmetros | Atributos antes do sexo |
+|---|---|---:|
+| Textura | LBP uniforme P=8/R=1: 10 bins. GLCM: 16 níveis, distâncias 1/2, ângulos 0/45/90/135°, simétrica e normalizada; média e DP populacional de contraste, dissimilaridade, homogeneidade, energia e correlação | 20 |
+| HOG | 9 orientações; células 16×16; blocos 2×2; L2-Hys | 6.084 |
+| Intensidade | Histograma 32 bins em [0,1], densidade; média, DP e percentis 25/50/75 | 37 |
 
-```python
-from image_preprocessing import preprocess_image
+Sexo é acrescentado a todas as famílias. O campo pixel_mean do extrator antigo é excluído da comparação LBP/GLCM. CSVs de textura têm id e exatamente os 20 atributos documentados, na ordem dos splits.
 
-image = preprocess_image(images_dir / f"{image_id}.png")
-# Passe image à extração HOG ou intensidade.
-```
+Modelos fixos da CV: SVR RBF C=10/epsilon=1/gamma=scale; Random Forest 300 árvores/profundidade ilimitada/max_features=1.0/semente 42; Gradient Boosting 300 estimadores/profundidade 3/taxa 0,05/semente 42. Não confundir com a busca separada do SVR no script 03.
 
-Os IDs de 4.000 imagens e a semente 42 estão congelados para execução, mas a equipe ainda precisa revisar a limitação de agrupamento por paciente antes de chamar a partição de oficial.
+## Arquivos e versões
 
----
+- src/00_audit_data.py: auditoria da base e indicação de chave explícita de paciente.
+- src/01_split_data.py: utilitário para reproduzir a divisão a partir de sample_ids.csv. Não integra o fluxo principal, que lê os IDs publicados.
+- src/02_preprocess.py: extrator original; inclui pixel_mean. O script 10 prepara somente os 20 atributos de textura exigidos pela comparação.
+- Scripts 02 HOG e 03–07: desenvolvimento na validação única; não substituem a tabela por dobras.
+- src/08_cross_validation.py: comparação interna e ablação.
+- src/09_oof_error_analysis.py: gráficos e análise das OOF existentes.
+- src/10_reproduce_from_raw.py: auditoria, textura, CV e figuras a partir da base original.
+- requirements.txt: dependências diretas do cálculo, fixadas.
+- requirements-colab.txt: instalação do cálculo e download pelo KaggleHub.
+- requirements-lock.txt: pip freeze original completo do Colab, preservado como evidência. Não é instalador portátil: inclui pacotes e caminhos internos preinstalados do Colab.
+- docs/versoes_execucao_cv.md: origem do registro de versões.
 
-## Modelagem — HOG e comparação de regressores (Raul)
+## Verificação realizada
 
-Scripts nesta seção usam `preprocess_image` (mesma entrada que a textura) e os IDs congelados em `data/splits/`.
+Reprodução completa em ambiente virtual vazio: 15 testes aprovados, matrizes reextraídas numericamente idênticas e maior diferença entre as métricas novas e originais de 7,11e-15. Evidências e limites em docs/reproducibilidade_verificada.md/json.
 
-### `02_hog_baseline.py` — HOG + SVR (primeiro modelo)
+## Artigo e fechamento
 
-```bash
-python src/02_hog_baseline.py \
-    --images-dir "data/raw/boneage-training-dataset/boneage-training-dataset" \
-    --csv data/raw/boneage-training-dataset.csv \
-    --splits-dir data/splits \
-    --out-dir results
-```
+docs/artigo_rascunho.md conserva o texto de revisão. O PDF de quatro páginas e as fontes SBC ficam em docs/artigo_sbc/ nesta atualização. Não apresentar a CV interna como avaliação final independente nem como validação clínica.
 
-Saída: `results/metrics_hog_svr.json` (MAE/RMSE/R² do SVR+HOG vs. média do treino).
-
-**Resultado atual (validação)**: média do treino MAE 33,71 · SVR MAE 27,88.
-
-### `03_tune_svr.py` — ajuste de hiperparâmetro do SVR
-
-Busca C/epsilon/gamma numa amostra do treino (`RandomizedSearchCV`, rápido), depois treina o modelo final com os melhores parâmetros no treino completo. Cacheia as features extraídas em `results/features_cache.joblib`.
-
-```bash
-python src/03_tune_svr.py \
-    --images-dir "data/raw/boneage-training-dataset/boneage-training-dataset" \
-    --csv data/raw/boneage-training-dataset.csv \
-    --splits-dir data/splits \
-    --out-dir results
-```
-
-Saída: `results/metrics_hog_svr_tuned.json`.
-
-### `04_compare_models.py` — SVR × Random Forest × Gradient Boosting
-
-Treina os três regressores clássicos exigidos na Semana 3 sobre o mesmo HOG e compara com a baseline da média do treino. Cacheia as features em `results/features_cache_hog_oficial.joblib` (cache próprio, separado do `03`).
-
-```bash
-python src/04_compare_models.py \
-    --images-dir "data/raw/boneage-training-dataset/boneage-training-dataset" \
-    --csv data/raw/boneage-training-dataset.csv \
-    --splits-dir data/splits \
-    --out-dir results
-```
-
-Saída: `results/metrics_hog_comparacao_modelos.json`.
-
-**Resultado atual (validação)**:
-
-| Modelo | MAE (meses) | RMSE (meses) | R² |
-|---|---|---|---|
-| Média do treino | 33,71 | 41,41 | ~0,00 |
-| SVR | 27,88 | 34,82 | 0,29 |
-| Random Forest | 26,85 | 33,96 | 0,33 |
-| **Gradient Boosting** | **22,62** | **29,93** | **0,48** |
-
-> **Importante**: sempre que `preprocess_image` ou os IDs congelados mudarem, apague os caches (`results/*.joblib`) antes de rodar de novo — features extraídas com uma versão antiga do preprocessamento não são comparáveis com os outros descritores da equipe.
-
-## Notebook de entrega das matrizes de textura
-
-Execute `notebooks/02_texture_extraction.ipynb` no Google Colab.
-O notebook utiliza o código do commit `888551893ef0667ea9d55835d5f0c2c47d6568bf`
-e os IDs congelados em `data/splits/`, sem recriar a amostra ou a divisão.
-
-A execução foi concluída com 2.800 imagens de treino, 600 de validação
-e 600 de teste. Cada matriz contém `id` e 20 características de textura:
-10 de LBP e 10 de GLCM, na mesma ordem dos IDs de cada split.
-A característica adicional `pixel_mean` do extrator foi excluída desta entrega.
-
-O pré-processamento comum converte para cinza, redimensiona para
-224 × 224 com Lanczos e normaliza por 255, sem recorte ou remoção de fundo.
-Os parâmetros completos, versões e hashes estão documentados no pacote gerado.
-
-Saída: `matrizes_textura_RSNA_4000.zip`, com matrizes, rótulos alinhados,
-IDs, scripts, documentação e manifesto de verificação.
-O ZIP é compartilhado diretamente com a equipe e permanece fora do Git.
-
-A semente da amostragem e divisão é 42. A ausência de IDs de imagem
-repetidos não comprova separação por paciente, pois a base não fornece
-uma chave verificável de paciente.
-
-## Fechamento: validação entre dobras e ablação
-
-Consulte `docs/fechamento_execucao.md` para o fluxo linear. Reutilize os IDs
-congelados; não regenere os splits. `src/08_cross_validation.py` compara
-HOG, textura e intensidade em três dobras dentro dos 2.800 IDs de treino,
-com scaler e baseline calculados no treino de cada dobra. Exporta média e
-desvio de MAE/RMSE/R², previsões com IDs e uma ablação de textura 224/128.
-
-O modo sem chave de paciente exige `--allow-image-folds` e registra a
-limitação; ele não comprova separação por paciente. O protocolo continua
-dependendo de esclarecimento com o professor. Validação e teste permanecem
-reservados nessa avaliação interna.
-
-O script `03_tune_svr.py` usa Pipeline na busca para ajustar o scaler dentro
-das dobras. Resultados de uma busca antiga devem ser recalculados caso sejam
-incluídos no artigo. `07_compare_all_descriptors.py` agora confere ordem,
-colunas e valores contra os splits congelados.
-
-Os scripts 05, 06 e 07 geram, respectivamente, intensidade/modelos,
-análise de erro HOG+GradientBoosting e tabela da validação única das três
-famílias. Eles não substituem a tabela por dobras do script 08.
-
-Resultados gerados continuam em `results/`, fora do Git; exporte seu ZIP
-para a equipe. Registre as versões do ambiente (`requirements-run.txt`).
-
-## Resultados internos conferidos — CV e radiografias OOF
-
-A execução real usou três dobras nos 2.800 IDs de treino, semente 42.
-HOG + Gradient Boosting com sexo apresentou MAE de 22,21 ± 0,85 meses;
-a média do treino apresentou 33,83 ± 0,99 meses. Esses valores são de
-desenvolvimento e não devem ser apresentados como resultado no teste final.
-
-- `docs/resultados_oof/`: métricas por dobra, tabela, associação ID/dobra
-  e oito casos ilustrativos com proveniência.
-- `docs/figuras/`: Bland–Altman, erros por idade e radiografias OOF.
-- `docs/artigo_rascunho.md`: texto para revisão; ainda não formatado no SBC.
-- `notebooks/03_fechamento_cv_ablacao.ipynb`: execução independente da CV.
-  Não repetir para recuperar resultados já gerados.
-- `notebooks/04_radiografias_oof_TP1.ipynb`: reproduz a montagem dos oito
-  exemplos reais conferidos, sem treinamento nem uso do teste externo.
-
-As matrizes completas e previsões OOF permanecem nos ZIPs compartilhados
-com a equipe, fora do Git. O rascunho conserva as pendências de agrupamento
-por paciente, avaliação externa, revisão/afiliação, formato SBC e assinaturas.
-
-Para reproduzir as figuras OOF usando as previsões já geradas, extraia
-`resultados_fechamento_TP1.zip` em uma pasta local (por exemplo,
-`results/cv`) e execute, da raiz do repositório:
-
-```bash
-python src/09_oof_error_analysis.py --predictions results/cv/predictions_oof.csv --out-dir results/analise_oof
-```
-
-O script confere cobertura única dos IDs congelados de treino. Produz
-Bland–Altman, erro por idade, dispersão referência × previsão e casos
-extremos; não ajusta modelos nem usa IDs externos de validação/teste.
+A submissão final depende de esclarecer agrupamento por paciente/exame, consolidar a avaliação externa existente com a equipe e preencher/assinar a contribuição do Anexo A. O roteiro e os modelos de fechamento registram as pendências sem inventar informações ou assinaturas.

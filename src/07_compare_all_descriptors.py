@@ -1,9 +1,8 @@
 """
 07_compare_all_descriptors.py
 
-Comparacao final entre as tres familias de descritores da equipe: HOG
-(Raul), textura LBP+GLCM (Carlos) e intensidade (Raul, contingencia pela
-ausencia da Rilari). Fecha a "grade minima de resultados" da Semana 3.
+Comparacao entre HOG, textura LBP+GLCM e intensidade.
+Reune a grade comparativa de descritores e regressores da Semana 3.
 
 A textura chega pronta (CSV) no pacote entregue pelo Carlos -- este script
 so precisa treinar os mesmos 3 regressores sobre ela, igual ja foi feito

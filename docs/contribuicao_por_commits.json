@@ -1,0 +1,106 @@
+{
+  "basis": "origin/main 5998f0752344d151703689974d4e3a99eda383c5, consultada em 03/10/2026; pacote de fechamento preparado nesta conversa, ainda não integrado à main",
+  "percentages": {
+    "carlos": 60,
+    "raul": 40
+  },
+  "status": "proposta_para_revisao_e_assinatura_dos_autores",
+  "percentage_method": "Estimativa qualitativa do escopo documentado: dados/EDA/splits/textura/pré-processamento/CV/ablação/OOF/documentação para Daniel; HOG/modelos/ajuste/intensidade/comparação/integração para Raul. Não representa horas medidas, contagem de linhas ou acordo já confirmado por Raul.",
+  "activities": {
+    "carlos": "Dados e EDA; auditoria de rótulos/imagens e proteção de data/raw.\nAmostra de 4.000 IDs e splits 2.800/600/600 (semente 42).\nPré-processamento comum, LBP/GLCM e matrizes alinhadas.\nCV, ablação, análise OOF, figuras/casos e testes do protocolo.\nNotebooks, README, rascunho/SBC e reprodução em ambiente limpo.",
+    "raul": "Estrutura inicial do repositório e baseline HOG + SVR.\nExtração HOG, ajuste do SVR e comparação SVR/RF/GB.\nDescritor de intensidade e baseline da média do treino.\nScripts de comparação entre famílias e análise de erro.\nIntegração do pré-processamento comum e documentação no README."
+  },
+  "matrix": [
+    [
+      "R",
+      "A"
+    ],
+    [
+      "R",
+      "-"
+    ],
+    [
+      "R",
+      "-"
+    ],
+    [
+      "R",
+      "A"
+    ],
+    [
+      "A",
+      "R"
+    ],
+    [
+      "A",
+      "R"
+    ],
+    [
+      "R",
+      "A"
+    ],
+    [
+      "R",
+      "A"
+    ],
+    [
+      "R",
+      "A"
+    ],
+    [
+      "R",
+      "A"
+    ],
+    [
+      "R",
+      "-"
+    ],
+    [
+      "R",
+      "A"
+    ],
+    [
+      "R",
+      "A"
+    ],
+    [
+      "R",
+      "-"
+    ],
+    [
+      "R",
+      "A"
+    ]
+  ],
+  "notes": "Proposta baseada nos commits e nos arquivos preparados em 03/10/2026.\nPercentuais estimados por escopo, sem medição de horas de trabalho.\nRevisar atividades, papéis e percentuais em equipe antes de assinar.\nInstituição/campus e cidade não identificados nos registros consultados.",
+  "commits": {
+    "carlos": {
+      "8f7e3f8": "auditoria e proteção dos dados",
+      "3795492": "EDA e amostra congelada",
+      "3336ac1": "splits oficiais e testes",
+      "f995a76": "textura LBP/GLCM",
+      "2617a14": "pré-processamento comum",
+      "6aac07e": "notebook e entrega da textura",
+      "d80f075": "CV, ablação, análise OOF, figuras, rascunho e testes",
+      "264e253": "instruções neutras dos notebooks"
+    },
+    "raul": {
+      "335fe98": "criação do repositório",
+      "ee0c857": "pipeline inicial e HOG+SVR",
+      "fdca40b": "correção do link do repositório",
+      "89fb5f7": "dependência joblib",
+      "8684a62": "ajuste do SVR",
+      "bf48dd8": "HOG com pré-processamento comum e comparação dos modelos",
+      "8885518": "documentação README",
+      "35c850d": "intensidade, análise de erro e comparação das três famílias"
+    }
+  },
+  "limits": [
+    "Commits identificam quem registrou o trabalho, mas não comprovam toda a colaboração realizada fora do Git.",
+    "R indica o papel principal proposto na categoria; não exclui autoria de subtarefas por outro integrante. Raul tem R na extração conjunta por HOG/intensidade; Daniel é o responsável pela textura.",
+    "Referências e redação inicial estão no rascunho versionado por Daniel; não foram localizados fichamentos formais nem confirmação de leitura integral de cada trabalho.",
+    "Formatação SBC e reprodução limpa foram preparadas no pacote atual; não são apresentadas como commits já integrados ao GitHub.",
+    "Os traços na matriz indicam ausência de contribuição localizada nos registros consultados, sujeita a revisão dos autores.",
+    "Afiliação acadêmica, assinaturas e respectivas datas não podem ser inferidas dos commits."
+  ]
+}

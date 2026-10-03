@@ -1,0 +1,114 @@
+{
+  "source_csv": "boneage-training-dataset.csv",
+  "csv_sha256": "9459296c0fca3e3cd908e79002914d0d90c7f5e46936eefd34b11261468ce209",
+  "columns": [
+    "id",
+    "boneage",
+    "male"
+  ],
+  "n_rows": 12611,
+  "age_months": {
+    "minimum": 1.0,
+    "median": 132.0,
+    "maximum": 228.0
+  },
+  "age_bins_24_months": {
+    "0-23": 91,
+    "24-47": 406,
+    "48-71": 835,
+    "72-95": 1616,
+    "96-119": 1340,
+    "120-143": 2875,
+    "144-167": 3347,
+    "168-191": 1583,
+    "192-215": 425,
+    "216-239": 93
+  },
+  "sex_counts": {
+    "female": 5778,
+    "male": 6833
+  },
+  "images": {
+    "found": 12611,
+    "missing": 0,
+    "missing_id_examples": [],
+    "sampled_dimensions": [
+      {
+        "id": "1377",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1378",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1379",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1380",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1381",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1382",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1383",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1384",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1385",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1387",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1388",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      },
+      {
+        "id": "1389",
+        "width": 1514,
+        "height": 2044,
+        "mode": "L"
+      }
+    ]
+  },
+  "patient_grouping": {
+    "status": "not_verifiable",
+    "note": "O id da imagem/exame não comprova identidade única do paciente; não declarar partição por paciente sem uma chave verificável."
+  }
+}

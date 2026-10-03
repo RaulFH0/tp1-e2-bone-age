@@ -1,0 +1,52 @@
+{
+  "status": "revisao_nao_submissao_final",
+  "pages": 4,
+  "abstract_lines": {
+    "Resumo.": 8,
+    "Abstract.": 8
+  },
+  "references": 11,
+  "paper": "A4",
+  "visual_review": "4 páginas conferidas; sem sobreposição ou corte identificado",
+  "latex_warnings": [],
+  "fonts": [
+    "CMBX12",
+    "CMMI12",
+    "CMR12",
+    "CMR8",
+    "CMSY10",
+    "CMSY8",
+    "DejaVuSans",
+    "NimbusMonL-Regu",
+    "NimbusRomNo9L-Medi",
+    "NimbusRomNo9L-MediItal",
+    "NimbusRomNo9L-Regu",
+    "NimbusRomNo9L-ReguItal",
+    "NimbusSanL-Bold"
+  ],
+  "pdf_sha256": "cd5465a871efe4918e40418b21f96bdad28eb1eaea8631e3d10e3184074718c5",
+  "main_tex_sha256": "caed1e377feb16bafd56b7a7cf14f69e5b806377752aa7be087ba78bac044c2c",
+  "source_result_zip_sha256": "6c95a1d3c6f1ccaf9cfe07f9b62a8d763132e81a308c2390ebaee0855461c4c3",
+  "pending": [
+    "esclarecimento_paciente_exame",
+    "avaliacao_externa_consolidada",
+    "revisao_e_assinaturas_contribuicao",
+    "confirmacao_composicao_oficial_equipe"
+  ],
+  "authors": [
+    "Carlos Daniel Reis da Silva",
+    "Raul Ferreira Holanda"
+  ],
+  "contacts": [
+    "reisdaniel739@gmail.com",
+    "raulfholanda@gmail.com"
+  ],
+  "affiliation": {
+    "course": "Sistemas de Informação",
+    "institution": "UniCatólica – Centro Universitário Católica de Quixadá",
+    "city": "Quixadá",
+    "state": "CE",
+    "country": "Brasil",
+    "source": "Informado por Carlos Daniel em 03/10/2026"
+  }
+}
