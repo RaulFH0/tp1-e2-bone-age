@@ -34,6 +34,7 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import RandomizedSearchCV, KFold
 from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 from sklearn.svm import SVR
 
 # Reaproveita as mesmas funcoes de extracao do script 02
@@ -54,9 +55,9 @@ RANDOM_SEED = 42
 # milhares de amostras e kernel RBF -- por isso ficamos numa faixa mais
 # comportada e usamos max_iter para nunca deixar uma combinacao travar sozinha.
 PARAM_DIST = {
-    "C": [1, 5, 10, 25],
-    "epsilon": [0.5, 1.0, 2.0],
-    "gamma": ["scale"],
+    "svr__C": [1, 5, 10, 25],
+    "svr__epsilon": [0.5, 1.0, 2.0],
+    "svr__gamma": ["scale"],
 }
 N_ITER_SEARCH = 8       # numero de combinacoes testadas (RandomizedSearchCV)
 N_CV_FOLDS = 3          # menos dobras = mais rapido
@@ -98,20 +99,17 @@ def main(images_dir: str, csv_path: str, splits_dir: str, out_dir: str):
 
     X_train, y_train, X_val, y_val = get_features(images_dir, csv_path, splits_dir, cache_path)
 
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_val_scaled = scaler.transform(X_val)
-
     # ETAPA 1: busca de hiperparametro numa AMOSTRA do treino (rapido).
     rng = np.random.RandomState(RANDOM_SEED)
-    n_search = min(SEARCH_SAMPLE_SIZE, X_train_scaled.shape[0])
-    sample_idx = rng.choice(X_train_scaled.shape[0], size=n_search, replace=False)
-    X_search = X_train_scaled[sample_idx]
+    n_search = min(SEARCH_SAMPLE_SIZE, X_train.shape[0])
+    sample_idx = rng.choice(X_train.shape[0], size=n_search, replace=False)
+    X_search = X_train[sample_idx]
     y_search = y_train[sample_idx]
 
     cv = KFold(n_splits=N_CV_FOLDS, shuffle=True, random_state=RANDOM_SEED)
     search = RandomizedSearchCV(
-        SVR(kernel="rbf", max_iter=SVR_MAX_ITER),
+        Pipeline([("scaler", StandardScaler()),
+                  ("svr", SVR(kernel="rbf", max_iter=SVR_MAX_ITER))]),
         PARAM_DIST,
         n_iter=N_ITER_SEARCH,
         scoring="neg_mean_absolute_error",
@@ -127,9 +125,11 @@ def main(images_dir: str, csv_path: str, splits_dir: str, out_dir: str):
 
     # ETAPA 2: treina o modelo final, com os melhores parametros, no treino INTEIRO.
     print("Etapa 2/2: treinando modelo final no conjunto de treino completo...")
-    best_model = SVR(kernel="rbf", max_iter=SVR_MAX_ITER, **search.best_params_)
-    best_model.fit(X_train_scaled, y_train)
-    y_pred_val = best_model.predict(X_val_scaled)
+    best_model = Pipeline([("scaler", StandardScaler()),
+                           ("svr", SVR(kernel="rbf", max_iter=SVR_MAX_ITER))])
+    best_model.set_params(**search.best_params_)
+    best_model.fit(X_train, y_train)
+    y_pred_val = best_model.predict(X_val)
 
     metrics = {
         "best_params": search.best_params_,
@@ -148,7 +148,7 @@ def main(images_dir: str, csv_path: str, splits_dir: str, out_dir: str):
     print(f"Parametros: {metrics['best_params']}")
     print(f"MAE na busca (amostra de {n_search}): {metrics['cv_mae_amostra_busca']:.2f} meses")
     print(f"MAE validacao (modelo final, treino completo): {metrics['val_MAE_meses']:.2f} meses")
-    print(f"\nCompare com o resultado anterior (sem ajuste): 22.77 meses")
+    print("\nCompare somente com resultados da mesma partição e pré-processamento.")
     print(f"Salvo em {out_dir / 'metrics_hog_svr_tuned.json'}")
 
 

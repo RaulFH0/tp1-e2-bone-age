@@ -1,0 +1,36 @@
+{
+  "n": 2800,
+  "MAE_meses": 22.20507738427012,
+  "RMSE_meses": 28.3594315012576,
+  "R2": 0.5326849333218984,
+  "bias_meses": 0.21601683980942638,
+  "sd_difference_meses": 28.3636741716971,
+  "lower_limit_meses": -55.37678453671688,
+  "upper_limit_meses": 55.80881821633574,
+  "by_age": [
+    {
+      "band": "0–5",
+      "n": 296,
+      "MAE_meses": 43.53229578149637
+    },
+    {
+      "band": "6–10",
+      "n": 924,
+      "MAE_meses": 19.286180337054073
+    },
+    {
+      "band": "11–15",
+      "n": 1465,
+      "MAE_meses": 17.58677211129325
+    },
+    {
+      "band": "16–19",
+      "n": 115,
+      "MAE_meses": 49.596568262181094
+    }
+  ],
+  "partition": "OOF no treino",
+  "patient_independence_verified": false,
+  "note": "Métricas agrupadas OOF; distintas da média por dobra usada na comparação.",
+  "predictions_sha256": "5e1c67eb8f8a25e22a04b6252ce1c9d095287b0bab4c58a4a3e318333dfacd7c"
+}

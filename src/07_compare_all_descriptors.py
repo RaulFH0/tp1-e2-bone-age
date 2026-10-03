@@ -30,6 +30,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 
 RANDOM_SEED = 42
+DEFAULT_SPLITS = Path(__file__).resolve().parents[1] / "data" / "splits"
+TEXTURE_COLUMNS = [f"lbp_{i}" for i in range(10)] + [
+    f"glcm_{prop}_{stat}" for prop in
+    ("contrast", "dissimilarity", "homogeneity", "energy", "correlation")
+    for stat in ("mean", "std")
+]
 
 MODELS = {
     "SVR": SVR(kernel="rbf", C=10.0, epsilon=1.0),
@@ -50,23 +56,30 @@ def evaluate(y_true, y_pred) -> dict:
     }
 
 
-def load_texture_split(texture_dir: Path, split: str):
+def load_texture_split(texture_dir: Path, split: str, splits_dir: Path = DEFAULT_SPLITS):
     tex = pd.read_csv(texture_dir / f"texture_{split}.csv", dtype={"id": str})
     meta = pd.read_csv(texture_dir / f"metadata_{split}.csv", dtype={"id": str})
-    assert tex["id"].tolist() == meta["id"].tolist(), (
-        f"IDs de texture_{split}.csv e metadata_{split}.csv fora de ordem — "
-        "não reordene os arquivos do pacote do Carlos."
-    )
+    expected = pd.read_csv(Path(splits_dir) / f"{split}_ids.csv", dtype={"id": str})["id"].tolist()
+    if len(expected) != len(set(expected)):
+        raise ValueError("IDs repetidos no split congelado")
+    if tex["id"].tolist() != expected or meta["id"].tolist() != expected:
+        raise ValueError(f"IDs ou ordem de {split} diferentes do split congelado")
+    if tex.columns.tolist() != ["id", *TEXTURE_COLUMNS]:
+        raise ValueError("A textura deve conter id e os 20 atributos LBP/GLCM documentados")
     X = tex.drop(columns="id").to_numpy(dtype=float)
     sex = meta["male"].to_numpy(dtype=float).reshape(-1, 1)
     X = np.hstack([X, sex])  # mesma convenção de HOG/intensidade: sexo concatenado
     y = meta["boneage"].to_numpy(dtype=float)
+    if not np.isfinite(X).all() or not np.isfinite(y).all():
+        raise ValueError("Características ou rótulos não finitos")
+    if not np.isin(sex, [0, 1]).all():
+        raise ValueError("Sexo deve ser binário")
     return X, y
 
 
-def run_texture(texture_dir: Path, out_dir: Path):
-    X_train, y_train = load_texture_split(texture_dir, "train")
-    X_val, y_val = load_texture_split(texture_dir, "val")
+def run_texture(texture_dir: Path, out_dir: Path, splits_dir: Path = DEFAULT_SPLITS):
+    X_train, y_train = load_texture_split(texture_dir, "train", splits_dir)
+    X_val, y_val = load_texture_split(texture_dir, "val", splits_dir)
 
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -129,7 +142,7 @@ def build_final_table(out_dir: Path, texture_results: dict):
     print(f"\nSalvo em {out_path} e em resultados_finais_todas_familias.json")
 
 
-def main(texture_dir: str, out_dir: str):
+def main(texture_dir: str, out_dir: str, splits_dir: Path = DEFAULT_SPLITS):
     texture_dir = Path(texture_dir)
     out_dir = Path(out_dir)
 
@@ -140,7 +153,7 @@ def main(texture_dir: str, out_dir: str):
                 "05_intensity_baseline.py antes deste script."
             )
 
-    texture_results = run_texture(texture_dir, out_dir)
+    texture_results = run_texture(texture_dir, out_dir, splits_dir)
     build_final_table(out_dir, texture_results)
 
 
@@ -148,5 +161,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--texture-dir", required=True, help="Pasta com o zip do Carlos já extraído")
     parser.add_argument("--out-dir", default="results")
+    parser.add_argument("--splits-dir", type=Path, default=DEFAULT_SPLITS)
     args = parser.parse_args()
-    main(args.texture_dir, args.out_dir)
+    main(args.texture_dir, args.out_dir, args.splits_dir)

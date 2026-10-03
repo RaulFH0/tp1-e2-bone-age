@@ -14,9 +14,9 @@ from PIL import Image
 IMAGE_SIZE = (224, 224)
 
 
-def preprocess_image(image_path: str | Path) -> np.ndarray:
+def preprocess_image(image_path: str | Path, *, size: tuple[int, int] = IMAGE_SIZE) -> np.ndarray:
     """Lê PNG, converte a cinza, redimensiona e devolve float32 em [0, 1]."""
     with Image.open(image_path) as source:
-        gray = source.convert("L").resize(IMAGE_SIZE, Image.Resampling.LANCZOS)
+        gray = source.convert("L").resize(size, Image.Resampling.LANCZOS)
         pixels = np.asarray(gray, dtype=np.uint8)
     return pixels.astype(np.float32) / 255.0
