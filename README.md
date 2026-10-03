@@ -201,3 +201,60 @@ O ZIP é compartilhado diretamente com a equipe e permanece fora do Git.
 A semente da amostragem e divisão é 42. A ausência de IDs de imagem
 repetidos não comprova separação por paciente, pois a base não fornece
 uma chave verificável de paciente.
+
+## Fechamento: validação entre dobras e ablação
+
+Consulte `docs/fechamento_execucao.md` para o fluxo linear. Reutilize os IDs
+congelados; não regenere os splits. `src/08_cross_validation.py` compara
+HOG, textura e intensidade em três dobras dentro dos 2.800 IDs de treino,
+com scaler e baseline calculados no treino de cada dobra. Exporta média e
+desvio de MAE/RMSE/R², previsões com IDs e uma ablação de textura 224/128.
+
+O modo sem chave de paciente exige `--allow-image-folds` e registra a
+limitação; ele não comprova separação por paciente. O protocolo continua
+dependendo de esclarecimento com o professor. Validação e teste permanecem
+reservados nessa avaliação interna.
+
+O script `03_tune_svr.py` usa Pipeline na busca para ajustar o scaler dentro
+das dobras. Resultados de uma busca antiga devem ser recalculados caso sejam
+incluídos no artigo. `07_compare_all_descriptors.py` agora confere ordem,
+colunas e valores contra os splits congelados.
+
+Os scripts 05, 06 e 07 geram, respectivamente, intensidade/modelos,
+análise de erro HOG+GradientBoosting e tabela da validação única das três
+famílias. Eles não substituem a tabela por dobras do script 08.
+
+Resultados gerados continuam em `results/`, fora do Git; exporte seu ZIP
+para a equipe. Registre as versões do ambiente (`requirements-run.txt`).
+
+## Resultados internos conferidos — CV e radiografias OOF
+
+A execução real usou três dobras nos 2.800 IDs de treino, semente 42.
+HOG + Gradient Boosting com sexo apresentou MAE de 22,21 ± 0,85 meses;
+a média do treino apresentou 33,83 ± 0,99 meses. Esses valores são de
+desenvolvimento e não devem ser apresentados como resultado no teste final.
+
+- `docs/resultados_oof/`: métricas por dobra, tabela, associação ID/dobra
+  e oito casos ilustrativos com proveniência.
+- `docs/figuras/`: Bland–Altman, erros por idade e radiografias OOF.
+- `docs/artigo_rascunho.md`: texto para revisão; ainda não formatado no SBC.
+- `notebooks/03_fechamento_cv_ablacao.ipynb`: execução independente da CV.
+  Não repetir para recuperar resultados já gerados.
+- `notebooks/04_radiografias_oof_TP1.ipynb`: reproduz a montagem dos oito
+  exemplos reais conferidos, sem treinamento nem uso do teste externo.
+
+As matrizes completas e previsões OOF permanecem nos ZIPs compartilhados
+com a equipe, fora do Git. O rascunho conserva as pendências de agrupamento
+por paciente, avaliação externa, revisão/afiliação, formato SBC e assinaturas.
+
+Para reproduzir as figuras OOF usando as previsões já geradas, extraia
+`resultados_fechamento_TP1.zip` em uma pasta local (por exemplo,
+`results/cv`) e execute, da raiz do repositório:
+
+```bash
+python src/09_oof_error_analysis.py --predictions results/cv/predictions_oof.csv --out-dir results/analise_oof
+```
+
+O script confere cobertura única dos IDs congelados de treino. Produz
+Bland–Altman, erro por idade, dispersão referência × previsão e casos
+extremos; não ajusta modelos nem usa IDs externos de validação/teste.

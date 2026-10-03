@@ -26,3 +26,6 @@ results/
 .DS_Store
 .vscode/
 .idea/
+
+# Figuras do artigo; dados brutos continuam ignorados
+!docs/figuras/*.png

@@ -1,0 +1,82 @@
+{
+  "source_results_zip_sha256": "6c95a1d3c6f1ccaf9cfe07f9b62a8d763132e81a308c2390ebaee0855461c4c3",
+  "source_predictions_oof_sha256": "5e1c67eb8f8a25e22a04b6252ce1c9d095287b0bab4c58a4a3e318333dfacd7c",
+  "dataset": "kmader/rsna-bone-age/versions/2",
+  "family": "HOG",
+  "model": "GradientBoosting",
+  "sex_covariate": true,
+  "partition": "OOF no treino de 2800 imagens",
+  "patient_independence_verified": false,
+  "selection": "4 menores e 4 maiores erros absolutos; desempate por ID como texto",
+  "selection_pool_size": 2800,
+  "new_model_fits": 0,
+  "external_test_used": false,
+  "preprocessing": "L; 224x224 Lanczos; float32/255; sem ROI/fundo/realce",
+  "preprocessing_code_sha256": "1db633a60ead8ca1dd2213002596649bc04072935a19e30b618cf366446c5df5",
+  "images": [
+    {
+      "id": "4220",
+      "source_png_sha256": "33ccf67b845bf4b59ba352e6e785e7a1f39e422bb55159adf074c417304adb74",
+      "source_size": [
+        1065,
+        1438
+      ]
+    },
+    {
+      "id": "14986",
+      "source_png_sha256": "fd3faf3a49c3aeeca2a3cad3f114e783c2cd74fcb72c96d0090a15fc19b65ad9",
+      "source_size": [
+        1386,
+        1683
+      ]
+    },
+    {
+      "id": "4869",
+      "source_png_sha256": "72bfd312aaadbfc1508bd4de2173c12673771d3bbfc37780008462b873d19902",
+      "source_size": [
+        1189,
+        1573
+      ]
+    },
+    {
+      "id": "1574",
+      "source_png_sha256": "dcad1583c03dd5c96c3c8f487e05ec6563f2a2749c074178630f138c69ca5a94",
+      "source_size": [
+        1514,
+        2044
+      ]
+    },
+    {
+      "id": "3337",
+      "source_png_sha256": "fb913fe97fa672112ef6f539845a082155cec1aa58f725c707ef912b4d42a38d",
+      "source_size": [
+        1413,
+        1338
+      ]
+    },
+    {
+      "id": "8460",
+      "source_png_sha256": "0e3beca778c15e59198a86bbbf0aca8de3b10b8a3a1ddf13978ae076d3702337",
+      "source_size": [
+        1468,
+        1243
+      ]
+    },
+    {
+      "id": "4199",
+      "source_png_sha256": "ee5f8298f93456ce9c607f225584174a85c4d874f22ae2d1056ab024509bb628",
+      "source_size": [
+        1670,
+        2010
+      ]
+    },
+    {
+      "id": "5047",
+      "source_png_sha256": "32051faddc840f702e0b7033970796c080acb4bbe863c2a0ce7c2f40080e844d",
+      "source_size": [
+        1048,
+        1398
+      ]
+    }
+  ]
+}
