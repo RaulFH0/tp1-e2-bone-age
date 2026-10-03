@@ -1,0 +1,58 @@
+{
+  "radiographs": [
+    {
+      "id": "4220",
+      "sha256": "33ccf67b845bf4b59ba352e6e785e7a1f39e422bb55159adf074c417304adb74",
+      "matches_original_colab_manifest": true
+    },
+    {
+      "id": "14986",
+      "sha256": "fd3faf3a49c3aeeca2a3cad3f114e783c2cd74fcb72c96d0090a15fc19b65ad9",
+      "matches_original_colab_manifest": true
+    },
+    {
+      "id": "4869",
+      "sha256": "72bfd312aaadbfc1508bd4de2173c12673771d3bbfc37780008462b873d19902",
+      "matches_original_colab_manifest": true
+    },
+    {
+      "id": "1574",
+      "sha256": "dcad1583c03dd5c96c3c8f487e05ec6563f2a2749c074178630f138c69ca5a94",
+      "matches_original_colab_manifest": true
+    },
+    {
+      "id": "3337",
+      "sha256": "fb913fe97fa672112ef6f539845a082155cec1aa58f725c707ef912b4d42a38d",
+      "matches_original_colab_manifest": true
+    },
+    {
+      "id": "8460",
+      "sha256": "0e3beca778c15e59198a86bbbf0aca8de3b10b8a3a1ddf13978ae076d3702337",
+      "matches_original_colab_manifest": true
+    },
+    {
+      "id": "4199",
+      "sha256": "ee5f8298f93456ce9c607f225584174a85c4d874f22ae2d1056ab024509bb628",
+      "matches_original_colab_manifest": true
+    },
+    {
+      "id": "5047",
+      "sha256": "32051faddc840f702e0b7033970796c080acb4bbe863c2a0ce7c2f40080e844d",
+      "matches_original_colab_manifest": true
+    }
+  ],
+  "frozen_split_reproduction": {
+    "train": {
+      "count": 2800,
+      "ids_and_order_match": true
+    },
+    "val": {
+      "count": 600,
+      "ids_and_order_match": true
+    },
+    "test": {
+      "count": 600,
+      "ids_and_order_match": true
+    }
+  }
+}

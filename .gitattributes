@@ -1,0 +1,5 @@
+# Normaliza o estilo SBC para LF no Git, preservando seu conteudo.
+docs/artigo_sbc/sbc-template.sty text eol=lf
+
+# PDFs sao binarios, inclusive formularios com streams de texto.
+*.pdf binary

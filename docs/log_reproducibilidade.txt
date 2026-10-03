@@ -1,0 +1,157 @@
+0% — Preparando base e IDs congelados.
+Auditoria salva em results/reproducibilidade/data_audit.json
+Rótulos: 12611 | PNG encontradas: 12611 | ausentes: 0
+Agrupamento por paciente: not_verifiable
+10% — Auditoria real concluída.
+Textura: 100/4000 imagens (2.5%)
+Textura: 200/4000 imagens (5.0%)
+Textura: 300/4000 imagens (7.5%)
+Textura: 400/4000 imagens (10.0%)
+Textura: 500/4000 imagens (12.5%)
+Textura: 600/4000 imagens (15.0%)
+Textura: 700/4000 imagens (17.5%)
+Textura: 800/4000 imagens (20.0%)
+Textura: 900/4000 imagens (22.5%)
+Textura: 1000/4000 imagens (25.0%)
+Textura: 1100/4000 imagens (27.5%)
+Textura: 1200/4000 imagens (30.0%)
+Textura: 1300/4000 imagens (32.5%)
+Textura: 1400/4000 imagens (35.0%)
+Textura: 1500/4000 imagens (37.5%)
+Textura: 1600/4000 imagens (40.0%)
+Textura: 1700/4000 imagens (42.5%)
+Textura: 1800/4000 imagens (45.0%)
+Textura: 1900/4000 imagens (47.5%)
+Textura: 2000/4000 imagens (50.0%)
+Textura: 2100/4000 imagens (52.5%)
+Textura: 2200/4000 imagens (55.0%)
+Textura: 2300/4000 imagens (57.5%)
+Textura: 2400/4000 imagens (60.0%)
+Textura: 2500/4000 imagens (62.5%)
+Textura: 2600/4000 imagens (65.0%)
+Textura: 2700/4000 imagens (67.5%)
+Textura: 2800/4000 imagens (70.0%)
+Textura: 2900/4000 imagens (72.5%)
+Textura: 3000/4000 imagens (75.0%)
+Textura: 3100/4000 imagens (77.5%)
+Textura: 3200/4000 imagens (80.0%)
+Textura: 3300/4000 imagens (82.5%)
+Textura: 3400/4000 imagens (85.0%)
+Textura: 3500/4000 imagens (87.5%)
+Textura: 3600/4000 imagens (90.0%)
+Textura: 3700/4000 imagens (92.5%)
+Textura: 3800/4000 imagens (95.0%)
+Textura: 3900/4000 imagens (97.5%)
+Textura: 4000/4000 imagens (100.0%)
+25% — Textura refeita dos pixels originais e IDs conferidos.
+PROTOCOLO PROVISÓRIO: independência por paciente não verificada.
+35% — Iniciando extração e treinamentos da CV; acompanhar as dobras no log.
+Extração: 100/2800
+Extração: 200/2800
+Extração: 300/2800
+Extração: 400/2800
+Extração: 500/2800
+Extração: 600/2800
+Extração: 700/2800
+Extração: 800/2800
+Extração: 900/2800
+Extração: 1000/2800
+Extração: 1100/2800
+Extração: 1200/2800
+Extração: 1300/2800
+Extração: 1400/2800
+Extração: 1500/2800
+Extração: 1600/2800
+Extração: 1700/2800
+Extração: 1800/2800
+Extração: 1900/2800
+Extração: 2000/2800
+Extração: 2100/2800
+Extração: 2200/2800
+Extração: 2300/2800
+Extração: 2400/2800
+Extração: 2500/2800
+Extração: 2600/2800
+Extração: 2700/2800
+Extração: 2800/2800
+Textura: dobra 1/3, SVR
+Textura: dobra 1/3, SVR concluído em 0.2s
+Textura: dobra 1/3, RandomForest
+Textura: dobra 1/3, RandomForest concluído em 1.3s
+Textura: dobra 1/3, GradientBoosting
+Textura: dobra 1/3, GradientBoosting concluído em 3.6s
+Textura: dobra 2/3, SVR
+Textura: dobra 2/3, SVR concluído em 0.2s
+Textura: dobra 2/3, RandomForest
+Textura: dobra 2/3, RandomForest concluído em 1.3s
+Textura: dobra 2/3, GradientBoosting
+Textura: dobra 2/3, GradientBoosting concluído em 3.4s
+Textura: dobra 3/3, SVR
+Textura: dobra 3/3, SVR concluído em 0.2s
+Textura: dobra 3/3, RandomForest
+Textura: dobra 3/3, RandomForest concluído em 1.3s
+Textura: dobra 3/3, GradientBoosting
+Textura: dobra 3/3, GradientBoosting concluído em 3.6s
+HOG: dobra 1/3, SVR
+HOG: dobra 1/3, SVR concluído em 18.0s
+HOG: dobra 1/3, RandomForest
+HOG: dobra 1/3, RandomForest concluído em 251.7s
+HOG: dobra 1/3, GradientBoosting
+HOG: dobra 1/3, GradientBoosting concluído em 844.7s
+HOG: dobra 2/3, SVR
+HOG: dobra 2/3, SVR concluído em 16.8s
+HOG: dobra 2/3, RandomForest
+HOG: dobra 2/3, RandomForest concluído em 258.9s
+HOG: dobra 2/3, GradientBoosting
+HOG: dobra 2/3, GradientBoosting concluído em 856.6s
+HOG: dobra 3/3, SVR
+HOG: dobra 3/3, SVR concluído em 15.3s
+HOG: dobra 3/3, RandomForest
+HOG: dobra 3/3, RandomForest concluído em 247.2s
+HOG: dobra 3/3, GradientBoosting
+HOG: dobra 3/3, GradientBoosting concluído em 860.7s
+Intensidade: dobra 1/3, SVR
+Intensidade: dobra 1/3, SVR concluído em 0.3s
+Intensidade: dobra 1/3, RandomForest
+Intensidade: dobra 1/3, RandomForest concluído em 2.9s
+Intensidade: dobra 1/3, GradientBoosting
+Intensidade: dobra 1/3, GradientBoosting concluído em 5.8s
+Intensidade: dobra 2/3, SVR
+Intensidade: dobra 2/3, SVR concluído em 0.3s
+Intensidade: dobra 2/3, RandomForest
+Intensidade: dobra 2/3, RandomForest concluído em 2.1s
+Intensidade: dobra 2/3, GradientBoosting
+Intensidade: dobra 2/3, GradientBoosting concluído em 5.0s
+Intensidade: dobra 3/3, SVR
+Intensidade: dobra 3/3, SVR concluído em 0.2s
+Intensidade: dobra 3/3, RandomForest
+Intensidade: dobra 3/3, RandomForest concluído em 1.9s
+Intensidade: dobra 3/3, GradientBoosting
+Intensidade: dobra 3/3, GradientBoosting concluído em 5.8s
+Textura128: dobra 1/3, GradientBoosting
+Textura128: dobra 1/3, GradientBoosting concluído em 3.3s
+Textura128: dobra 2/3, GradientBoosting
+Textura128: dobra 2/3, GradientBoosting concluído em 3.2s
+Textura128: dobra 3/3, GradientBoosting
+Textura128: dobra 3/3, GradientBoosting concluído em 3.3s
+| Família | Modelo | MAE (meses) | RMSE (meses) | R² |
+|---|---|---|---|---|
+| Textura | media_treino | 33.83 ± 0.99 | 41.48 ± 0.66 | -0.00 ± 0.00 |
+| Textura | SVR | 25.71 ± 0.41 | 33.44 ± 0.19 | 0.35 ± 0.01 |
+| Textura | RandomForest | 24.84 ± 0.93 | 32.16 ± 1.10 | 0.40 ± 0.03 |
+| Textura | GradientBoosting | 24.81 ± 0.98 | 32.01 ± 1.34 | 0.40 ± 0.04 |
+| HOG | media_treino | 33.83 ± 0.99 | 41.48 ± 0.66 | -0.00 ± 0.00 |
+| HOG | SVR | 28.15 ± 0.89 | 35.37 ± 0.67 | 0.27 ± 0.01 |
+| HOG | RandomForest | 26.73 ± 0.99 | 33.25 ± 0.89 | 0.36 ± 0.02 |
+| HOG | GradientBoosting | 22.21 ± 0.85 | 28.35 ± 0.85 | 0.53 ± 0.02 |
+| Intensidade | media_treino | 33.83 ± 0.99 | 41.48 ± 0.66 | -0.00 ± 0.00 |
+| Intensidade | SVR | 28.35 ± 0.74 | 36.69 ± 0.64 | 0.22 ± 0.02 |
+| Intensidade | RandomForest | 25.76 ± 1.18 | 33.13 ± 1.60 | 0.36 ± 0.05 |
+| Intensidade | GradientBoosting | 25.95 ± 1.04 | 33.52 ± 1.67 | 0.35 ± 0.05 |
+| Textura128 | media_treino | 33.83 ± 0.99 | 41.48 ± 0.66 | -0.00 ± 0.00 |
+| Textura128 | GradientBoosting | 25.54 ± 1.51 | 32.59 ± 1.51 | 0.38 ± 0.04 |
+Avaliação interna concluída. Teste preservado. Verifique o campo protocol antes do artigo.
+85% — CV e ablação concluídas; gerando figuras.
+Análise OOF concluída: 2800 IDs de treino; nenhum novo treinamento.
+100% desta execução — /workspace/scratch/69deac9abbd6/worktrees/tp1-reproducibilidade/results/verificacao_limpa_TP1.zip
+O pacote não encerra afiliação, contribuição assinada, agrupamento ou avaliação final externa.

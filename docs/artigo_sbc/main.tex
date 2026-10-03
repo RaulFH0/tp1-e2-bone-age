@@ -1,0 +1,109 @@
+\documentclass[12pt]{article}
+\usepackage{sbc-template}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{babel}
+\babelprovide[import,main]{portuguese}
+\usepackage{graphicx,booktabs,microtype}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Idade ossea pediatrica com descritores manuais},pdfauthor={Carlos Daniel Reis da Silva; Raul Ferreira Holanda},pdfsubject={CV interna e analise OOF - versao para revisao},pdflang={pt-BR}}
+\urlstyle{same}
+\emergencystretch=2em
+\renewcommand{\refname}{Referências}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabela}
+\title{Idade óssea pediátrica com descritores manuais:\\comparação interna de regressores clássicos}
+\author{Carlos Daniel Reis da Silva, Raul Ferreira Holanda}
+\address{Sistemas de Informação\\
+UniCatólica -- Centro Universitário Católica de Quixadá\\
+Quixadá -- CE -- Brasil
+\email{reisdaniel739@gmail.com, raulfholanda@gmail.com}}
+\date{}
+\begin{document}
+\maketitle
+\begin{resumo}
+Comparamos descritores manuais para estimar idade óssea na base RSNA. Uma amostra de 4.000 imagens recebeu IDs congelados de treino, validação e teste. Três dobras nos 2.800 casos de treino compararam textura, HOG e intensidade, com sexo como covariável. HOG com Gradient Boosting obteve MAE de $22{,}21\pm0{,}85$ meses, contra $33{,}83\pm0{,}99$ da média do treino. Na textura, reduzir a resolução de 224 para 128 pixels aumentou o MAE em 0,73 mês. Os erros foram maiores nas idades extremas. Os resultados são internos; a independência por paciente não foi verificada.
+\end{resumo}
+\begin{abstract}
+We compare handcrafted descriptors for bone age estimation from RSNA radiographs. A 4,000-image sample received frozen training, validation and test IDs. Three folds within 2,800 training cases compared texture, HOG and intensity, with sex as a covariate. HOG with Gradient Boosting achieved a mean MAE of $22.21\pm0.85$ months, versus $33.83\pm0.99$ for the training-mean baseline. Reducing texture resolution from 224 to 128 pixels increased MAE by 0.73 months. Errors were larger at the age extremes. These are internal results; patient independence was not verified.
+\end{abstract}
+\section{Introdução}
+A estimativa de maturidade esquelética em radiografias pediátricas de mão é a tarefa do desafio RSNA \cite{halabi}. Formulamos a idade óssea, em meses, como regressão a partir da imagem e do sexo. Um baseline com características explícitas permite comparar representações antes de desenvolver modelos mais complexos. As contribuições são:
+\begin{itemize}
+\item amostra auditada e IDs congelados com pré-processamento comum;
+\item comparação de três famílias e três regressores, com baseline trivial;
+\item ablação de resolução e análise de previsões fora da dobra (OOF).
+\end{itemize}
+\section{Trabalhos relacionados}
+Halabi et al. \cite{halabi} situam o desafio RSNA, e Larson et al. \cite{larson} investigam redes profundas para maturidade esquelética. Nosso estudo privilegia descritores explícitos e não compara diretamente números de protocolos distintos. GLCM \cite{haralick} e LBP \cite{ojala} representam textura; HOG \cite{dalal}, desenvolvido para detecção humana, representa gradientes. Sua aplicação à idade óssea é uma hipótese experimental. SVR \cite{smola}, Random Forest \cite{breiman} e Gradient Boosting \cite{friedman} oferecem modelos distintos para a mesma representação. A seleção pela própria CV pode favorecer estimativas otimistas \cite{varma}; por isso, distinguimos desenvolvimento de avaliação externa.
+\newpage
+\section{Metodologia}
+\textbf{Dados e protocolo.} A versão 2 de \texttt{kmader/rsna-bone-age} contém 12.611 imagens com rótulos \texttt{id}, \texttt{boneage} e \texttt{male}: 5.778 femininos e 6.833 masculinos, de 1 a 228 meses. Para limitar o custo, selecionamos 4.000 imagens, semente 42, estratificadas por sexo e faixas $[0,72)$, $[72,132)$, $[132,192)$ e $[192,240)$ meses. Congelamos 2.800 IDs de treino, 600 de validação e 600 de teste. São divisões do treino público. IDs de imagem são disjuntos, mas \textbf{não há chave verificável de paciente}: o protocolo por imagem é provisório e não comprova o agrupamento exigido pela atividade.
+
+\textbf{Pixels comuns.} Convertemos para cinza (Pillow L), redimensionamos para $224\times224$ com Lanczos e dividimos por 255 em \texttt{float32}. Não aplicamos recorte, remoção de fundo ou realce. A ablação testa essa resolução operacional, sem presumir preservação de todos os detalhes.
+
+\textbf{Representações.} Textura combina LBP uniforme \cite{ojala}, oito pontos e raio um (histograma de dez valores), com GLCM \cite{haralick} de 16 níveis, distâncias 1 e 2 e ângulos $0^\circ$, $45^\circ$, $90^\circ$, $135^\circ$, simétrica e normalizada. Média e desvio populacional de contraste, dissimilaridade, homogeneidade, energia e correlação sobre oito pares produzem mais dez atributos. HOG \cite{dalal} usa nove orientações, células $16\times16$, blocos $2\times2$ e normalização L2-Hys (6.084 atributos). Intensidade resume a distribuição global: histograma de 32 intervalos em $[0,1]$, densidade, média, desvio e percentis 25, 50 e 75 (37 atributos). Sexo é acrescentado a todas as famílias; a média adicional do extrator de textura é excluída.
+
+\textbf{Ajuste e avaliação.} Com scikit-learn \cite{pedregosa}, comparamos configurações fixas: SVR RBF ($C=10$, $\epsilon=1$, $\gamma=\mathrm{scale}$); RF, 300 árvores, profundidade ilimitada e todas as características candidatas; GB, 300 estimadores, profundidade três e taxa 0,05. Árvores usam semente 42. Três dobras estratificadas por idade e sexo, embaralhadas com semente 42, têm 934, 933 e 933 casos. Cada Pipeline ajusta StandardScaler somente no treino interno; o baseline prediz sua média de idades. MAE mede erro absoluto em meses; RMSE destaca erros maiores e $R^2$ mede variação explicada. Reportamos média e desvio amostral entre dobras. A mesma CV seleciona o candidato; não é avaliação independente \cite{varma}. Validação e teste externos não entram nesta execução.
+
+A ablação compara textura em 224 e 128 pixels, mantendo GB, sexo e dobras. Código, IDs, parâmetros, versões e hashes estão em \url{https://github.com/RaulFH0/tp1-e2-bone-age}. As previsões permitem recomputar as métricas.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\linewidth]{figuras/casos_oof.pdf}
+\caption{Casos OOF em pixels comuns: dois menores erros e maiores erros nas faixas 0--5 e 16--19 anos. R: referência; P: previsão; E: erro absoluto, em meses.}
+\label{fig:casos}
+\end{figure}
+\newpage
+\section{Resultados e discussão}
+A Tabela~\ref{tab:cv} resume a CV interna. HOG+GB reduz o MAE em 34,35\% contra o baseline. Não realizamos teste de significância. A ablação aumenta o MAE em 0,73 mês; diferenças por dobra são 0,01, 1,28 e 0,91 mês, sem generalização a outras famílias.
+\begin{table}[!h]
+\centering
+\caption{CV no treino: média $\pm$ desvio entre três dobras. MAE e RMSE em meses; RF: Random Forest; GB: Gradient Boosting.}
+\label{tab:cv}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrr}
+\toprule
+Família & Modelo & MAE & RMSE & $R^2$\\
+\midrule
+Baseline & Média & $33{,}83\pm0{,}99$ & $41{,}48\pm0{,}66$ & $-0{,}0001\pm0{,}0001$\\
+Textura 224 & SVR & $25{,}71\pm0{,}41$ & $33{,}44\pm0{,}19$ & $0{,}35\pm0{,}01$\\
+ & RF & $24{,}84\pm0{,}93$ & $32{,}16\pm1{,}10$ & $0{,}40\pm0{,}03$\\
+ & GB & $24{,}81\pm0{,}98$ & $32{,}01\pm1{,}34$ & $0{,}40\pm0{,}04$\\
+HOG & SVR & $28{,}15\pm0{,}89$ & $35{,}37\pm0{,}67$ & $0{,}27\pm0{,}01$\\
+ & RF & $26{,}73\pm0{,}99$ & $33{,}25\pm0{,}89$ & $0{,}36\pm0{,}02$\\
+ & GB & $\mathbf{22{,}21\pm0{,}85}$ & $28{,}35\pm0{,}85$ & $0{,}53\pm0{,}02$\\
+Intensidade & SVR & $28{,}35\pm0{,}74$ & $36{,}69\pm0{,}64$ & $0{,}22\pm0{,}02$\\
+ & RF & $25{,}76\pm1{,}18$ & $33{,}13\pm1{,}60$ & $0{,}36\pm0{,}05$\\
+ & GB & $25{,}95\pm1{,}04$ & $33{,}52\pm1{,}67$ & $0{,}35\pm0{,}05$\\
+Textura 128 & GB & $25{,}54\pm1{,}51$ & $32{,}59\pm1{,}51$ & $0{,}38\pm0{,}04$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Nas 2.800 previsões OOF de HOG+GB, Bland--Altman \cite{bland} apresenta viés de $+0{,}22$ mês e limites descritivos de $-55{,}38$ e $+55{,}81$ (predito menos referência; média $\pm1{,}96$ DP). O viés pequeno oculta superestimação nas idades menores e subestimação nas maiores (Figura~\ref{fig:erro}); não demonstra concordância clínica.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\linewidth]{figuras/erro_oof.pdf}
+\caption{HOG+GB: Bland--Altman e MAE por faixa, agrupados sobre previsões OOF; barras identificam o número de casos.}
+\label{fig:erro}
+\end{figure}
+
+\newpage
+\section{Conclusão}
+HOG+GB estabeleceu o menor MAE interno; textura favoreceu 224 pixels. Os extremos etários tiveram maior erro e menor representação. Na Figura~\ref{fig:casos}, 3337 tem pouca luminosidade e enquadramento deslocado, mas 4220 também é escuro e apresenta erro pequeno: aparência não estabelece causalidade. A seleção ilustrativa não é aleatória. A ausência de chave de paciente, a amostragem e a escolha pela mesma CV limitam a generalização. São próximos passos esclarecer o agrupamento, consolidar a avaliação externa da equipe e testar melhorias sem reutilizar o teste para seleção. Estes resultados não validam uso clínico.
+
+\begin{thebibliography}{11}
+\bibitem{halabi} Halabi, S. S. et al. (2019). \href{https://doi.org/10.1148/radiol.2018180736}{The RSNA Pediatric Bone Age Machine Learning Challenge.} \textit{Radiology}, 290(2):498--503.
+\bibitem{larson} Larson, D. B. et al. (2018). \href{https://doi.org/10.1148/radiol.2017170236}{Performance of a Deep-Learning Neural Network Model in Assessing Skeletal Maturity on Pediatric Hand Radiographs.} \textit{Radiology}, 287(1):313--322.
+\bibitem{haralick} Haralick, R. M., Shanmugam, K. e Dinstein, I. (1973). \href{https://doi.org/10.1109/TSMC.1973.4309314}{Textural Features for Image Classification.} \textit{IEEE Trans. Syst., Man, Cybern.}, SMC-3(6):610--621.
+\bibitem{ojala} Ojala, T., Pietikäinen, M. e Mäenpää, T. (2002). \href{https://doi.org/10.1109/TPAMI.2002.1017623}{Multiresolution Gray-Scale and Rotation Invariant Texture Classification with Local Binary Patterns.} \textit{IEEE Trans. Pattern Anal. Mach. Intell.}, 24(7):971--987.
+\bibitem{dalal} Dalal, N. e Triggs, B. (2005). \href{https://doi.org/10.1109/CVPR.2005.177}{Histograms of Oriented Gradients for Human Detection.} \textit{CVPR}, 1:886--893.
+\bibitem{smola} Smola, A. J. e Schölkopf, B. (2004). \href{https://doi.org/10.1023/B:STCO.0000035301.49549.88}{A tutorial on support vector regression.} \textit{Statistics and Computing}, 14:199--222.
+\bibitem{breiman} Breiman, L. (2001). \href{https://doi.org/10.1023/A:1010933404324}{Random Forests.} \textit{Machine Learning}, 45:5--32.
+\bibitem{friedman} Friedman, J. H. (2001). \href{https://doi.org/10.1214/aos/1013203451}{Greedy function approximation: A gradient boosting machine.} \textit{The Annals of Statistics}, 29(5):1189--1232.
+\bibitem{varma} Varma, S. e Simon, R. (2006). \href{https://doi.org/10.1186/1471-2105-7-91}{Bias in error estimation when using cross-validation for model selection.} \textit{BMC Bioinformatics}, 7:91.
+\bibitem{bland} Bland, J. M. e Altman, D. G. (1986). \href{https://doi.org/10.1016/S0140-6736(86)90837-8}{Statistical methods for assessing agreement between two methods of clinical measurement.} \textit{The Lancet}, 327(8476):307--310.
+\bibitem{pedregosa} Pedregosa, F. et al. (2011). \href{https://www.jmlr.org/papers/v12/pedregosa11a.html}{Scikit-learn: Machine Learning in Python.} \textit{Journal of Machine Learning Research}, 12:2825--2830.
+\end{thebibliography}
+\noindent\textbf{Apoio de IA.} IA generativa auxiliou revisão de código, elaboração de testes, organização do texto e tradução do abstract. Resultados e referências exigem conferência pelos autores; a responsabilidade pela versão submetida permanece com a equipe.
+\end{document}

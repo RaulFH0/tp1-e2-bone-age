@@ -1,8 +1,14 @@
 # Baseline de idade óssea pediátrica com descritores manuais e regressores clássicos
 
-Carlos Daniel Reis da Silva · Raul Ferreira Holanda · Rílari Maia Castelo
+Carlos Daniel Reis da Silva · Raul Ferreira Holanda
 
-**RASCUNHO COM RESULTADOS REAIS CONFERIDOS — não submeter nesta versão.** Confirmar afiliação, esclarecer o agrupamento por paciente/exame, consolidar a avaliação final com a equipe, revisar as fontes e adaptar ao template SBC de até quatro páginas. Os resultados abaixo são de validação cruzada interna no treino, não do conjunto de teste. Nenhum resultado sintético foi inserido.
+Sistemas de Informação — UniCatólica – Centro Universitário Católica de Quixadá
+
+Quixadá – CE, Brasil
+
+Contato: reisdaniel739@gmail.com · raulfholanda@gmail.com
+
+**RASCUNHO COM RESULTADOS REAIS CONFERIDOS — não submeter nesta versão.** Esclarecer o agrupamento por paciente/exame, consolidar a avaliação final com a equipe, revisar as fontes e adaptar ao template SBC de até quatro páginas. Os resultados abaixo são de validação cruzada interna no treino, não do conjunto de teste. Nenhum resultado sintético foi inserido.
 
 ## Resumo
 
@@ -115,5 +121,5 @@ Foi utilizada IA generativa como apoio à revisão de código, elaboração de t
 1. Esclarecer o agrupamento por paciente/exame com o professor; não declarar conformidade antes desse esclarecimento.
 2. Consolidar com a equipe a configuração escolhida e a avaliação externa já existente; este pacote verificou CV interna e ablação, não o teste final.
 3. Inserir e conferir no documento renderizado as Figuras 1 e 2 fornecidas; as radiografias reais e suas previsões OOF já foram verificadas.
-4. Confirmar afiliação e contribuição individual e revisar referências/declaracão de IA em equipe.
+4. Confirmar contribuição individual e revisar referências/declaracão de IA em equipe.
 5. Adaptar e conferir no template SBC: até quatro páginas, até dez linhas em cada resumo, fontes/PDF e contribuição assinada conforme a atividade. Não alegar conformidade de páginas antes de renderizar o documento completo.

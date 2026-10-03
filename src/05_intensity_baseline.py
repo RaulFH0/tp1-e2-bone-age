@@ -1,11 +1,8 @@
 """
 05_intensity_baseline.py
 
-CONTINGENCIA: esta familia de descritores (intensidade) era responsabilidade
-da Rilari, conforme o plano original da equipe. Como ela nao respondeu aos
-pedidos de status as vesperas da entrega, Raul implementou esta versao para
-nao travar a comparacao final. Os parametros abaixo
-sao uma escolha razoavel, mas nao foram validados/discutidos com ela.
+Descritor de intensidade e comparacao de regressores.
+Implementacao por Raul; parametros documentados abaixo.
 
 Extrai um descritor de intensidade sobre a MESMA imagem pre-processada
 (preprocess_image: 224x224, escala de cinza, normalizada em [0,1]) usada por
@@ -128,8 +125,8 @@ def main(images_dir: str, csv_path: str, splits_dir: str, out_dir: str):
         results[name] = evaluate(y_val, y_pred)
 
     results["_nota"] = (
-        "Descritor de intensidade implementado por Raul como contingencia "
-        "(Rilari nao respondeu). Parametros: histograma 32 bins + media/desvio/"
+        "Descritor de intensidade implementado por Raul. "
+        "Parametros: histograma 32 bins + media/desvio/"
         "percentis 25-50-75 + sexo."
     )
 
