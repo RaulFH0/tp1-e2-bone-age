@@ -10,8 +10,10 @@ A execução original de CV com imagens reais foi concluída. Seus resultados in
 
 O modo por imagem permanece provisório. Se houver id,patient_id verificável, usar --groups-csv e revisar os próprios splits antes de declarar independência por paciente. Não inventar grupos a partir do ID da imagem.
 
-As OOF usam somente o treino. A seleção pela mesma CV não é avaliação externa independente. A avaliação final dos 600 IDs de teste precisa ser consolidada com a equipe: reaproveitar a execução existente quando disponível e não usar o teste para escolher modelos ou parâmetros.
+As OOF usam somente o treino. A seleção pela mesma CV não é avaliação externa independente. A avaliação final dos 600 IDs de teste foi publicada por Raul em e3b12d7 (04/10/2026) e incorporada ao artigo: HOG+GB, MAE 22,14 meses, RMSE 28,29 meses e R² 0,520. Os parâmetros foram fixados antes do teste, conforme o registro; não usar os resultados para novos ajustes. Esta atualização documental não reexecutou o teste.
 
 O script 10 refaz a textura 224, extrai HOG/intensidade e roda as configurações fixas dos três modelos e a ablação de textura 128 com GB. O script 08 ajusta scaler e baseline no treino de cada dobra. O script 09 e a montagem de radiografias geram figuras sobre as OOF.
 
 Testes automáticos usam dados pequenos para verificar contratos e rejeitar vazamento/IDs incorretos. Métricas de fixtures não são resultados experimentais e não entram no artigo. A reprodução real registra evidência separadamente.
+
+Revisão de 04/10/2026: 21 testes aprovados. O script 11 passou a conferir splits congelados, schema de textura e rótulos originais, sem usar caches antigos sem proveniência. As métricas publicadas não foram alteradas, e nenhuma avaliação real de teste foi repetida. Para conferir a execução anterior, recuperar seus caches/manifesto/previsões existentes; a correção do código não comprova retroativamente a origem desses dados.

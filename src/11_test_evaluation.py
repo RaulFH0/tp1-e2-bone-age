@@ -20,7 +20,6 @@ import argparse
 import json
 from pathlib import Path
 
-import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
@@ -41,6 +40,8 @@ def _load_module(name, path):
 HERE = Path(__file__).parent
 _hog = _load_module("hog_baseline", HERE / "02_hog_baseline.py")
 _inten = _load_module("intensity_baseline", HERE / "05_intensity_baseline.py")
+_comparison = _load_module("test_texture_contract", HERE / "07_compare_all_descriptors.py")
+_protocol = _load_module("test_frozen_protocol", HERE / "08_cross_validation.py")
 
 RANDOM_SEED = 42
 
@@ -81,16 +82,11 @@ def run_family(name, X_train, y_train, X_test, y_test):
 
 
 def get_hog(images_dir, csv_path, splits_dir, out_dir, train_ids, test_ids, meta):
-    cache_path = out_dir / "features_cache_hog_oficial.joblib"
-    if cache_path.exists():
-        print("Reaproveitando cache de HOG (treino) ja existente...")
-        cache = joblib.load(cache_path)
-        X_train, y_train = cache["X_train"], cache["y_train"]
-    else:
-        print("Extraindo HOG do treino (sem cache)...")
-        meta_idx = meta.set_index("id")
-        y_train = meta_idx.loc[train_ids, "boneage"].values
-        X_train = _hog.extract_features(train_ids, images_dir, meta)
+    # Caches históricos não registram IDs/proveniência; extrair dos pixels comuns.
+    print("Extraindo HOG do treino (sem reutilizar cache)...")
+    meta_idx = meta.set_index("id")
+    y_train = meta_idx.loc[train_ids, "boneage"].values
+    X_train = _hog.extract_features(train_ids, images_dir, meta)
 
     print("Extraindo HOG do TESTE (600 imagens, execucao unica)...")
     meta_idx = meta.set_index("id")
@@ -100,16 +96,10 @@ def get_hog(images_dir, csv_path, splits_dir, out_dir, train_ids, test_ids, meta
 
 
 def get_intensity(images_dir, csv_path, splits_dir, out_dir, train_ids, test_ids, meta):
-    cache_path = out_dir / "features_cache_intensidade.joblib"
-    if cache_path.exists():
-        print("Reaproveitando cache de intensidade (treino) ja existente...")
-        cache = joblib.load(cache_path)
-        X_train, y_train = cache["X_train"], cache["y_train"]
-    else:
-        print("Extraindo intensidade do treino (sem cache)...")
-        meta_idx = meta.set_index("id")
-        y_train = meta_idx.loc[train_ids, "boneage"].values
-        X_train = _inten.extract_intensity_features(train_ids, images_dir, meta)
+    print("Extraindo intensidade do treino (sem reutilizar cache)...")
+    meta_idx = meta.set_index("id")
+    y_train = meta_idx.loc[train_ids, "boneage"].values
+    X_train = _inten.extract_intensity_features(train_ids, images_dir, meta)
 
     print("Extraindo intensidade do TESTE (600 imagens, execucao unica)...")
     meta_idx = meta.set_index("id")
@@ -118,20 +108,37 @@ def get_intensity(images_dir, csv_path, splits_dir, out_dir, train_ids, test_ids
     return X_train, y_train, X_test, y_test
 
 
-def load_texture_split(texture_dir: Path, split: str):
-    tex = pd.read_csv(texture_dir / f"texture_{split}.csv", dtype={"id": str})
-    meta = pd.read_csv(texture_dir / f"metadata_{split}.csv", dtype={"id": str})
-    assert tex["id"].tolist() == meta["id"].tolist()
-    X = tex.drop(columns="id").to_numpy(dtype=float)
-    sex = meta["male"].to_numpy(dtype=float).reshape(-1, 1)
-    X = np.hstack([X, sex])
-    y = meta["boneage"].to_numpy(dtype=float)
+def aligned_labels(meta, ids):
+    if not {"id", "boneage", "male"}.issubset(meta.columns):
+        raise ValueError("Rótulos devem conter id, boneage e male")
+    if meta["id"].isna().any() or meta["id"].duplicated().any():
+        raise ValueError("IDs ausentes ou duplicados nos rótulos originais")
+    if len(set(ids)) != len(ids) or not set(ids).issubset(set(meta["id"])):
+        raise ValueError("IDs repetidos ou sem rótulo original")
+    aligned = meta.set_index("id").loc[ids]
+    if not np.isfinite(aligned[["boneage", "male"]].to_numpy(dtype=float)).all():
+        raise ValueError("Rótulos originais não finitos")
+    if not np.isin(aligned["male"].to_numpy(dtype=float), [0, 1]).all():
+        raise ValueError("Sexo deve ser binário")
+    return aligned
+
+
+def load_texture_split(texture_dir: Path, split: str,
+                       splits_dir: Path = _comparison.DEFAULT_SPLITS, meta=None):
+    X, y = _comparison.load_texture_split(texture_dir, split, splits_dir)
+    if meta is not None:
+        ids = pd.read_csv(Path(splits_dir) / f"{split}_ids.csv", dtype={"id": str})["id"].tolist()
+        original = aligned_labels(meta, ids)
+        if not np.array_equal(y, original["boneage"].to_numpy(dtype=float)):
+            raise ValueError(f"Idades de {split} diferentes das anotações originais")
+        if not np.array_equal(X[:, -1], original["male"].to_numpy(dtype=float)):
+            raise ValueError(f"Sexo de {split} diferente das anotações originais")
     return X, y
 
 
-def get_texture(texture_dir: Path):
-    X_train, y_train = load_texture_split(texture_dir, "train")
-    X_test, y_test = load_texture_split(texture_dir, "test")
+def get_texture(texture_dir: Path, splits_dir: Path = _comparison.DEFAULT_SPLITS, meta=None):
+    X_train, y_train = load_texture_split(texture_dir, "train", splits_dir, meta)
+    X_test, y_test = load_texture_split(texture_dir, "test", splits_dir, meta)
     return X_train, y_train, X_test, y_test
 
 
@@ -143,8 +150,11 @@ def main(images_dir, csv_path, splits_dir, texture_dir, out_dir):
     out_dir.mkdir(parents=True, exist_ok=True)
 
     meta = pd.read_csv(csv_path, dtype={"id": str})
-    train_ids = pd.read_csv(splits_dir / "train_ids.csv", dtype={"id": str})["id"].tolist()
-    test_ids = pd.read_csv(splits_dir / "test_ids.csv", dtype={"id": str})["id"].tolist()
+    frozen = _protocol.frozen_ids(splits_dir)
+    aligned_labels(meta, frozen["sample"])
+    train_ids, test_ids = frozen["train"], frozen["test"]
+    # Conferir o pacote completo antes de ajustar qualquer modelo.
+    texture_data = get_texture(texture_dir, splits_dir, meta)
     print(f"Treino: {len(train_ids)} | Teste: {len(test_ids)} (avaliacao UNICA)")
 
     print("\n=== HOG ===")
@@ -156,28 +166,29 @@ def main(images_dir, csv_path, splits_dir, texture_dir, out_dir):
     inten_results = run_family("Intensidade", X_train, y_train, X_test, y_test)
 
     print("\n=== Textura (LBP+GLCM) ===")
-    X_train, y_train, X_test, y_test = get_texture(texture_dir)
+    X_train, y_train, X_test, y_test = texture_data
     tex_results = run_family("Textura", X_train, y_train, X_test, y_test)
 
     familias = {"HOG": hog_results, "Textura (LBP+GLCM)": tex_results, "Intensidade": inten_results}
     modelos = ["media_treino", "SVR", "RandomForest", "GradientBoosting"]
 
     linhas = ["| Descritor | Modelo | MAE (meses) | RMSE (meses) | R² |", "|---|---|---|---|---|"]
-    melhor = None
     for fam_nome, fam_res in familias.items():
         for mod_nome in modelos:
             m = fam_res[mod_nome]
             label = "Média do treino" if mod_nome == "media_treino" else mod_nome
             linhas.append(f"| {fam_nome} | {label} | {m['MAE_meses']:.2f} | {m['RMSE_meses']:.2f} | {m['R2']:.3f} |")
-            if mod_nome != "media_treino" and (melhor is None or m["MAE_meses"] < melhor[2]):
-                melhor = (fam_nome, mod_nome, m["MAE_meses"])
 
     tabela_md = "\n".join(linhas)
-    resumo = f"\n\n**Melhor combinação no TESTE**: {melhor[0]} + {melhor[1]}, MAE = {melhor[2]:.2f} meses.\n"
+    candidate = hog_results["GradientBoosting"]
+    resumo = ("\n\n**Candidato selecionado pela CV**: HOG + GradientBoosting, "
+              f"MAE no teste = {candidate['MAE_meses']:.2f} meses. "
+              "As demais combinações fixas são apresentadas descritivamente.\n")
     nota = (
         "\n\n> Avaliação única no conjunto de teste (600 imagens), com modelos cujos "
         "hiperparâmetros foram fixados exclusivamente a partir do treino/validação/CV. "
-        "Nenhum ajuste foi feito após observar este resultado.\n"
+        "Este script preserva as configurações fixas e não seleciona modelos pelo teste. "
+        "A ausência de execuções anteriores depende do registro experimental dos autores.\n"
     )
 
     (out_dir / "tabela_final_teste.md").write_text(tabela_md + resumo + nota, encoding="utf-8")

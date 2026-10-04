@@ -1,14 +1,14 @@
 # Fundamentação da proposta de contribuição
 
-origin/main 5998f0752344d151703689974d4e3a99eda383c5, consultada em 03/10/2026; pacote de fechamento preparado nesta conversa, ainda não integrado à main
+origin/main e3b12d7685366e25551cbcf9bcde51a5c1b60dee, consultada em 04/10/2026.
 
 ## Percentuais propostos
 
-Carlos Daniel: **60%**. Raul: **40%**. Total: **100%**.
+Carlos Daniel: **50%**. Raul: **50%**. Rílari: **0%**. Total: **100%**.
 
-Estimativa qualitativa do escopo documentado: dados/EDA/splits/textura/pré-processamento/CV/ablação/OOF/documentação para Daniel; HOG/modelos/ajuste/intensidade/comparação/integração para Raul. Não representa horas medidas, contagem de linhas ou acordo já confirmado por Raul.
+Proposta de divisão equivalente entre Carlos Daniel e Raul, considerando suas entregas complementares essenciais no GitHub e o apoio de Raul a todas as atividades de Daniel, confirmado por Daniel. O Anexo A exige atividades concretas, soma de 100% e um R por linha; não atribui pesos por tarefa nem transforma commits ou R em percentual. Os 50%/50% são uma avaliação qualitativa para revisão e assinatura pela equipe, não uma medição de esforço nem um acordo já confirmado por Raul.
 
-Os valores foram preenchidos a pedido de Carlos Daniel e devem ser revistos por ambos antes da assinatura; não são declaração de acordo já firmado.
+Os valores foram preenchidos a pedido de Carlos Daniel e devem ser revistos pela equipe antes da assinatura; não são declaração de acordo já firmado.
 
 ## Evidências publicadas
 
@@ -33,19 +33,48 @@ Os valores foram preenchidos a pedido de Carlos Daniel e devem ser revistos por 
 
 ## Critério da matriz
 
-A matriz possui exatamente um R por categoria. R é o papel principal proposto; A é apoio documentado; traço é ausência de contribuição localizada nos registros consultados. A categoria de extração reúne os três descritores: Raul coordena HOG/intensidade e Daniel responde pela textura. A responsabilidade por categoria não é crédito exclusivo de todas as suas subtarefas.
+A matriz possui exatamente um R por categoria. R é o papel principal proposto; A é apoio documentado; traço é ausência de participação relatada para Rílari. O apoio de Raul nas atividades de Carlos Daniel foi confirmado por Carlos Daniel em 04/10/2026 e não depende de commits individuais de Raul. A categoria de extração reúne os três descritores: Raul coordena HOG/intensidade e Daniel responde pela textura. A responsabilidade por categoria não é crédito exclusivo de todas as suas subtarefas.
 
-## Conteúdo preparado, ainda fora da main
+## Atualização do registro
 
-As fontes/PDF SBC, auditoria consolidada e verificação completa em ambiente limpo foram preparados no pacote atual. A main consultada ainda não inclui este pacote. Não foram contabilizados como commits publicados.
+As fontes/PDF SBC, auditoria consolidada e reprodução limpa foram integradas em 9857a1c/PR #7. Raul publicou o teste em e3b12d7. O artigo atualizado com teste e três integrantes é preparado neste pacote.
 
 ## Limites da inferência
 
 - Commits identificam quem registrou o trabalho, mas não comprovam toda a colaboração realizada fora do Git.
 - R indica o papel principal proposto na categoria; não exclui autoria de subtarefas por outro integrante. Raul tem R na extração conjunta por HOG/intensidade; Daniel é o responsável pela textura.
 - Referências e redação inicial estão no rascunho versionado por Daniel; não foram localizados fichamentos formais nem confirmação de leitura integral de cada trabalho.
-- Formatação SBC e reprodução limpa foram preparadas no pacote atual; não são apresentadas como commits já integrados ao GitHub.
-- Os traços na matriz indicam ausência de contribuição localizada nos registros consultados, sujeita a revisão dos autores.
+- Formatação SBC e reprodução limpa foram integradas no PR #7; a atualização de teste e integrantes deste pacote aguarda publicação.
+- Os traços de Rílari refletem o relato explícito de ausência de participação. O apoio de Raul a todas as atividades de Carlos Daniel foi confirmado nesta conversa.
 - Afiliação acadêmica, assinaturas e respectivas datas não podem ser inferidas dos commits.
 
 A identificação do curso, o prazo e o modelo do formulário vêm da atividade fornecida. Afiliação informada por Carlos Daniel em 03/10/2026: Sistemas de Informação, UniCatólica – Centro Universitário Católica de Quixadá, Quixadá – CE, Brasil. Assinaturas e suas datas ficam em branco até serem preenchidas pelos autores.
+
+## Inclusão dos três integrantes
+
+Carlos Daniel informou em 04/10/2026 que o professor orientou manter todos os integrantes, inclusive sem contribuição. Rílari Maia Castelo foi incluída no artigo e no formulário; 0%, nenhuma atividade e traços na matriz refletem o relato de Daniel. Não há commits atribuídos a Rílari na main consultada, mas o percentual não foi determinado somente pela contagem de commits. O e-mail de Rílari foi informado por Daniel: 2023010247@unicatolicaquixada.edu.br. Sua matrícula foi obtida do identificador desse endereço (2023010247). Os 50%/50% foram originalmente propostos como contribuição equivalente. O documento recebido registra 50%/50%/0% e foi assinado por Carlos Daniel e Raul; falta a assinatura de Rílari. O formulário versionado continua sem assinaturas.
+
+## Redistribuição das atividades (Anexo A.3)
+
+Carlos Daniel relatou em 04/10/2026 que Rílari não deu retorno das atividades inicialmente destinadas a ela. Daniel e Raul decidiram dividir e executar essas atividades entre si. Essa ocorrência foi registrada no campo A.3 do formulário. As atividades concretas de Daniel e Raul continuam fundamentadas no trabalho documentado; não foi inferida uma divisão adicional de tarefas sem evidência. O acordo de redistribuição não determina percentuais; a distribuição 50%/50%/0% consta no documento posteriormente assinado por Carlos Daniel e Raul.
+
+O formulário segue as tabelas de identificação, contribuição individual, matriz de responsabilidades e declaração/assinaturas do Anexo A. A declaração do professor foi mantida integralmente; assinaturas e datas das assinaturas estão em branco.
+
+## Correção do registro de apoio de Raul
+
+Carlos Daniel confirmou em 04/10/2026 que Raul deu apoio a todas as atividades realizadas por ele. A matriz passou a registrar A para Raul em todas as categorias com R de Carlos Daniel, incluindo EDA, literatura, Introdução/Relacionados e formatação SBC. Essa declaração complementa o histórico do Git; ausência de commit específico não foi usada como ausência de participação.
+
+O commit 35c850d registra intensidade, baseline, comparação das três famílias e análise de erro (Bland-Altman, dispersão e faixas etárias). O commit e3b12d7 registra a avaliação final das 600 imagens de teste e a tabela correspondente. Raul foi registrado como R em experimentos comparativos e análise de erro; Daniel como A nessas duas categorias pela CV, ablação e análise OOF. Daniel permanece R na geração consolidada das figuras do artigo, com A de Raul, que implementou os gráficos de validação. Os papéis resumem categorias com subtarefas de ambos.
+
+A confirmação do apoio foi considerada na proposta de contribuição equivalente: 50%/50%. A distribuição consta no documento recebido, assinado por Carlos Daniel e Raul; falta a assinatura de Rílari.
+
+## Relação com o enunciado e critério dos percentuais
+
+O Anexo A do enunciado, páginas 7 e 8, exige descrição de atividades concretas, soma dos percentuais em 100%, um R por linha na matriz e assinaturas de todos. Não fornece pesos por atividade nem uma fórmula para converter commits ou quantidade de R em contribuição.
+
+| Integrante | Entregas registradas relacionadas aos requisitos do TP1 |
+|---|---|
+| Carlos Daniel | Dados, auditoria, EDA, amostragem/splits, textura, pré-processamento, CV, ablação, OOF, figuras, notebooks, artigo SBC e reprodução limpa. |
+| Raul | Repositório inicial, HOG, treinamento/ajuste dos três modelos, intensidade, baseline, comparação entre famílias, Bland-Altman/dispersão/erro por idade e avaliação final do teste. |
+
+Ambos contribuíram para requisitos essenciais, e Carlos Daniel confirmou apoio de Raul a todas as suas atividades. Por isso foi proposta uma contribuição equivalente (50%/50%), mantendo 0% para Rílari conforme o relato de ausência de participação. Essa distribuição não é um resultado matemático do histórico do Git; consta no PDF recebido, assinado por Carlos Daniel e Raul.

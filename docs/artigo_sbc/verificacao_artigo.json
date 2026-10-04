@@ -7,7 +7,7 @@
   },
   "references": 11,
   "paper": "A4",
-  "visual_review": "4 páginas conferidas; sem sobreposição ou corte identificado",
+  "visual_review": "Quatro páginas renderizadas e conferidas com três integrantes; sem cortes ou sobreposição.",
   "latex_warnings": [],
   "fonts": [
     "CMBX12",
@@ -24,22 +24,23 @@
     "NimbusRomNo9L-ReguItal",
     "NimbusSanL-Bold"
   ],
-  "pdf_sha256": "cd5465a871efe4918e40418b21f96bdad28eb1eaea8631e3d10e3184074718c5",
-  "main_tex_sha256": "caed1e377feb16bafd56b7a7cf14f69e5b806377752aa7be087ba78bac044c2c",
+  "pdf_sha256": "d7972ec81e93d6815717b5071cab03f72a1f89453e0f7b08f47e405bcb8dd020",
+  "main_tex_sha256": "8b27c709021fa56a6c5e38a22c3598b69b232d09d9cbe10298b515096fe45249",
   "source_result_zip_sha256": "6c95a1d3c6f1ccaf9cfe07f9b62a8d763132e81a308c2390ebaee0855461c4c3",
   "pending": [
     "esclarecimento_paciente_exame",
-    "avaliacao_externa_consolidada",
-    "revisao_e_assinaturas_contribuicao",
-    "confirmacao_composicao_oficial_equipe"
+    "revisao_proveniencia_teste_publicado",
+    "assinatura_rilari"
   ],
   "authors": [
     "Carlos Daniel Reis da Silva",
-    "Raul Ferreira Holanda"
+    "Raul Ferreira Holanda",
+    "Rílari Maia Castelo"
   ],
   "contacts": [
     "reisdaniel739@gmail.com",
-    "raulfholanda@gmail.com"
+    "raulfholanda@gmail.com",
+    "2023010247@unicatolicaquixada.edu.br"
   ],
   "affiliation": {
     "course": "Sistemas de Informação",
@@ -48,5 +49,11 @@
     "state": "CE",
     "country": "Brasil",
     "source": "Informado por Carlos Daniel em 03/10/2026"
-  }
+  },
+  "source_test_commit": "e3b12d7685366e25551cbcf9bcde51a5c1b60dee",
+  "source_test_results_sha256": "07b6d740a951808c6013435fd44c506ca7e9d9d74619dea15e8092b91acea6be",
+  "test_rerun": false,
+  "team_resolution": "Orientação posterior do professor informada por Carlos Daniel em 04/10/2026: incluir os três integrantes, mesmo sem contribuição.",
+  "repo_pdf_filename": "TP1_E2_artigo_SBC.pdf",
+  "reviewed_main_commit": "0cc180e4d089ea1703b48ed545c9506826b36e2c"
 }

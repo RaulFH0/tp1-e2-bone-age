@@ -1,22 +1,22 @@
 # Baseline de idade óssea pediátrica com descritores manuais e regressores clássicos
 
-Carlos Daniel Reis da Silva · Raul Ferreira Holanda
+Carlos Daniel Reis da Silva · Raul Ferreira Holanda · Rílari Maia Castelo
 
 Sistemas de Informação — UniCatólica – Centro Universitário Católica de Quixadá
 
 Quixadá – CE, Brasil
 
-Contato: reisdaniel739@gmail.com · raulfholanda@gmail.com
+Contato: reisdaniel739@gmail.com · raulfholanda@gmail.com · 2023010247@unicatolicaquixada.edu.br
 
-**RASCUNHO COM RESULTADOS REAIS CONFERIDOS — não submeter nesta versão.** Esclarecer o agrupamento por paciente/exame, consolidar a avaliação final com a equipe, revisar as fontes e adaptar ao template SBC de até quatro páginas. Os resultados abaixo são de validação cruzada interna no treino, não do conjunto de teste. Nenhum resultado sintético foi inserido.
+**RASCUNHO COM RESULTADOS REAIS CONFERIDOS — não submeter nesta versão.** Esclarecer o agrupamento por paciente/exame, revisar as fontes e adaptar ao template SBC de até quatro páginas. Os resultados distinguem CV interna no treino e avaliação de teste publicada por Raul em e3b12d7. Nenhum resultado sintético foi inserido.
 
 ## Resumo
 
-Este trabalho compara descritores manuais e regressores clássicos para estimar idade óssea em radiografias pediátricas. Uma amostra estratificada de 4.000 imagens RSNA foi dividida em treino, validação e teste. Nos 2.800 casos de treino, três dobras por idade e sexo compararam textura, HOG e intensidade, com sexo como covariável. HOG com Gradient Boosting apresentou o menor MAE médio: 22,21 ± 0,85 meses, contra 33,83 ± 0,99 da média do treino. Reduzir a resolução da textura de 224 para 128 pixels aumentou o MAE em 0,73 mês. Os erros foram maiores nas faixas etárias extremas. A comparação é interna ao desenvolvimento, e a ausência de chave de paciente limita a comprovação de independência entre partições.
+Este trabalho compara descritores manuais e regressores clássicos para estimar idade óssea em radiografias pediátricas. Uma amostra estratificada de 4.000 imagens RSNA foi dividida em treino, validação e teste. Nos 2.800 casos de treino, três dobras por idade e sexo compararam textura, HOG e intensidade, com sexo como covariável. HOG com Gradient Boosting apresentou o menor MAE médio: 22,21 ± 0,85 meses, contra 33,83 ± 0,99 da média do treino. Reduzir a resolução da textura de 224 para 128 pixels aumentou o MAE em 0,73 mês. Os erros foram maiores nas faixas etárias extremas. Na avaliação final registrada dos 600 casos de teste, HOG + GB obteve MAE de 22,14 meses, contra 33,69 do baseline. A ausência de chave de paciente limita a comprovação de independência entre partições.
 
 ## Abstract
 
-This work compares handcrafted descriptors and classical regressors for pediatric bone age estimation. A stratified sample of 4,000 RSNA radiographs was divided into training, validation and test sets. Three age-and-sex-stratified folds within the 2,800 training cases compared texture, HOG and intensity representations, with sex as a covariate. HOG with Gradient Boosting achieved the lowest mean MAE: 22.21 ± 0.85 months, versus 33.83 ± 0.99 for the training-mean baseline. Reducing texture resolution from 224 to 128 pixels increased MAE by 0.73 months. Errors were larger at the age extremes. These are internal development results, and the absence of a patient identifier limits verification of independence across partitions.
+This work compares handcrafted descriptors and classical regressors for pediatric bone age estimation. A stratified sample of 4,000 RSNA radiographs was divided into training, validation and test sets. Three age-and-sex-stratified folds within the 2,800 training cases compared texture, HOG and intensity representations, with sex as a covariate. HOG with Gradient Boosting achieved the lowest mean MAE: 22.21 ± 0.85 months, versus 33.83 ± 0.99 for the training-mean baseline. Reducing texture resolution from 224 to 128 pixels increased MAE by 0.73 months. Errors were larger at the age extremes. In the recorded final evaluation on 600 test cases, HOG + GB achieved an MAE of 22.14 months, versus 33.69 for the baseline. The absence of a patient identifier limits verification of independence across partitions.
 
 ## 1. Introdução
 
@@ -90,11 +90,32 @@ No caso 3337, a imagem processada apresenta baixa luminosidade visual e a mão d
 
 ![Radiografias com os menores e maiores erros OOF](figuras/figura_radiografias_oof_HOG_GB.png)
 
-**[Consolidar com a equipe a avaliação externa existente antes de realizar novo teste.]**
+
+
+### Avaliação final registrada no teste
+
+Raul publicou a execução em 04/10/2026, commit e3b12d7. O script `src/11_test_evaluation.py` ajusta os modelos nos 2.800 casos de treino e avalia os 600 casos de teste, sem incorporar a validação ao ajuste final. Os parâmetros correspondem às configurações da CV; o StandardScaler é ajustado somente no treino. O registro declara acesso único ao teste, sem ajuste posterior. Os números abaixo vêm de `results/resultados_teste_todas_familias.json`; esta atualização documental não reexecutou o teste.
+
+| Descritor | Modelo | MAE (meses) | RMSE (meses) | R² |
+|---|---|---|---|---|
+| HOG | Média do treino | 33.69 | 40.85 | -0.000 |
+| HOG | SVR | 27.21 | 33.96 | 0.309 |
+| HOG | RandomForest | 26.36 | 33.01 | 0.347 |
+| HOG | GradientBoosting | 22.14 | 28.29 | 0.520 |
+| Textura (LBP+GLCM) | Média do treino | 33.69 | 40.85 | -0.000 |
+| Textura (LBP+GLCM) | SVR | 25.17 | 32.34 | 0.373 |
+| Textura (LBP+GLCM) | RandomForest | 24.50 | 31.39 | 0.409 |
+| Textura (LBP+GLCM) | GradientBoosting | 24.16 | 31.34 | 0.411 |
+| Intensidade | Média do treino | 33.69 | 40.85 | -0.000 |
+| Intensidade | SVR | 26.96 | 35.15 | 0.259 |
+| Intensidade | RandomForest | 24.73 | 31.92 | 0.389 |
+| Intensidade | GradientBoosting | 24.91 | 32.02 | 0.385 |
+
+HOG + Gradient Boosting, candidato com menor MAE na CV, apresenta MAE de 22,14 meses no teste; redução de 34,28% contra o baseline de 33,69. Estes são valores de um único conjunto de teste, sem desvio entre dobras. As análises Bland–Altman e radiografias permanecem referentes ao OOF no treino.
 
 ## 5. Conclusão
 
-Na comparação interna entre descritores e regressores clássicos, HOG com Gradient Boosting apresentou o menor MAE médio, reduzindo o erro em 34,35% em relação à média do treino. A ablação de textura favoreceu a resolução 224×224 em relação a 128×128 nas três dobras. Entretanto, os erros maiores nas faixas etárias extremas e os limites de concordância amplos indicam que a média global não resume o comportamento por idade. A amostra de 4.000 imagens, a escolha do candidato pela mesma validação cruzada e a ausência de chave verificável de paciente limitam a generalização. O conjunto de teste permanece preservado nesta execução. A conclusão definitiva depende da consolidação do protocolo e da avaliação externa, sem apresentar o sistema como ferramenta clínica validada.
+Na comparação interna entre descritores e regressores clássicos, HOG com Gradient Boosting apresentou o menor MAE médio, reduzindo o erro em 34,35% em relação à média do treino. A ablação de textura favoreceu a resolução 224×224 em relação a 128×128 nas três dobras. Entretanto, os erros maiores nas faixas etárias extremas e os limites de concordância amplos indicam que a média global não resume o comportamento por idade. A amostra de 4.000 imagens, a escolha do candidato pela mesma validação cruzada e a ausência de chave verificável de paciente limitam a generalização. A avaliação final publicada por Raul registrou MAE de 22,14 meses para HOG + GB nos 600 casos de teste, redução de 34,28% contra o baseline de 33,69. O protocolo por imagem continua limitado pela ausência de chave de paciente; o sistema não é uma ferramenta clínica validada.
 
 ## Referências iniciais
 
@@ -119,7 +140,7 @@ Foi utilizada IA generativa como apoio à revisão de código, elaboração de t
 ## Pendências para a versão de entrega
 
 1. Esclarecer o agrupamento por paciente/exame com o professor; não declarar conformidade antes desse esclarecimento.
-2. Consolidar com a equipe a configuração escolhida e a avaliação externa já existente; este pacote verificou CV interna e ablação, não o teste final.
+2. Revisar os resultados de teste incorporados e preservar o conjunto já utilizado de novos ajustes. A conferência documental não reexecutou o teste.
 3. Inserir e conferir no documento renderizado as Figuras 1 e 2 fornecidas; as radiografias reais e suas previsões OOF já foram verificadas.
 4. Confirmar contribuição individual e revisar referências/declaracão de IA em equipe.
 5. Adaptar e conferir no template SBC: até quatro páginas, até dez linhas em cada resumo, fontes/PDF e contribuição assinada conforme a atividade. Não alegar conformidade de páginas antes de renderizar o documento completo.

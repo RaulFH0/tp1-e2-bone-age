@@ -1,6 +1,6 @@
 # TP1 E2 — Idade óssea RSNA
 
-Baseline de regressão com textura LBP/GLCM, HOG e intensidade. Autores do artigo: Carlos Daniel Reis da Silva e Raul Ferreira Holanda.
+Baseline de regressão com textura LBP/GLCM, HOG e intensidade. Autores do artigo: Carlos Daniel Reis da Silva, Raul Ferreira Holanda e Rílari Maia Castelo.
 
 ## Protocolo e números reportados
 
@@ -13,7 +13,7 @@ Baseline de regressão com textura LBP/GLCM, HOG e intensidade. Autores do artig
 
 ## Reprodução completa em sessão limpa do Colab
 
-Após integrar os arquivos desta versão na main, abrir notebooks/03_fechamento_cv_ablacao.ipynb no Google Colab e executar a única célula de código em uma sessão nova. Ela:
+Abrir notebooks/03_fechamento_cv_ablacao.ipynb no Google Colab e executar a única célula de código em uma sessão nova. Ela:
 
 1. Clona uma cópia isolada da main e registra o commit.
 2. Instala requirements-colab.txt e executa os testes.
@@ -95,6 +95,8 @@ Modelos fixos da CV: SVR RBF C=10/epsilon=1/gamma=scale; Random Forest 300 árvo
 - src/08_cross_validation.py: comparação interna e ablação.
 - src/09_oof_error_analysis.py: gráficos e análise das OOF existentes.
 - src/10_reproduce_from_raw.py: auditoria, textura, CV e figuras a partir da base original.
+- src/11_test_evaluation.py: avaliação final com configurações fixas, validação de splits/rótulos e textura; não é executado pelo fluxo de reprodução da CV.
+- results/resultados_teste_todas_familias.json e results/tabela_final_teste.md: resultados de teste publicados por Raul, preservados.
 - requirements.txt: dependências diretas do cálculo, fixadas.
 - requirements-colab.txt: instalação do cálculo e download pelo KaggleHub.
 - requirements-lock.txt: pip freeze original completo do Colab, preservado como evidência. Não é instalador portátil: inclui pacotes e caminhos internos preinstalados do Colab.
@@ -108,4 +110,14 @@ Reprodução completa em ambiente virtual vazio: 15 testes aprovados, matrizes r
 
 docs/artigo_rascunho.md conserva o texto de revisão. O PDF de quatro páginas e as fontes SBC ficam em docs/artigo_sbc/ nesta atualização. Não apresentar a CV interna como avaliação final independente nem como validação clínica.
 
-A submissão final depende de esclarecer agrupamento por paciente/exame, consolidar a avaliação externa existente com a equipe e preencher/assinar a contribuição do Anexo A. O roteiro e os modelos de fechamento registram as pendências sem inventar informações ou assinaturas.
+A submissão final depende de esclarecer agrupamento por paciente/exame e revisar a avaliação de teste já publicada. O PDF de contribuição recebido contém assinaturas de Carlos Daniel e Raul; falta a assinatura de Rílari, exigida pelo Anexo A mesmo com 0%. O formulário versionado é a cópia preenchida para assinatura; o PDF assinado integra o pacote do AVA.
+
+## Avaliação final no teste
+
+Raul publicou em 04/10/2026, commit e3b12d7, a avaliação registrada dos 600 casos de teste com modelos ajustados nos 2.800 casos de treino. Código: src/11_test_evaluation.py. Resultados: results/resultados_teste_todas_familias.json e results/tabela_final_teste.md. HOG+GB, candidato selecionado pela CV, obteve MAE 22,14 meses, RMSE 28,29 meses e R² 0,520; baseline da média do treino: MAE 33,69.
+
+O artigo atualizado distingue CV e teste; as figuras de erro continuam sendo OOF no treino. Esta atualização documental não reexecutou o teste nem auditou os caches locais usados nessa execução. As métricas de teste devem ser preservadas, sem ajustes posteriores guiados por elas. Conforme orientação posterior do professor, informada por Daniel em 04/10/2026, artigo e contribuição incluem os três integrantes: Carlos Daniel Reis da Silva, Raul Ferreira Holanda e Rílari Maia Castelo. A contribuição de Rílari é registrada como 0%, de acordo com o relato de Daniel; sua inclusão não atribui autoria de scripts ou atividades realizadas por outros integrantes.
+
+## Revisão de 04/10/2026
+
+Base publicada conferida: main 0cc180e. A suíte atual passou em 21 testes, incluindo seis regressões sintéticas da avaliação final. O script 11 não reutiliza caches históricos sem proveniência; confere os 4.000 IDs congelados, as 20 características da textura e idade/sexo contra as anotações originais antes do treinamento. O resumo identifica HOG+GB como candidato escolhido pela CV. Essas correções protegem novas execuções e não certificam retroativamente os caches da execução publicada. Nenhum modelo real foi retreinado, nenhuma avaliação real de teste foi repetida e os resultados publicados foram preservados. Não repetir o teste como parte desta atualização. Detalhes e pendências: docs/revisao_repositorio_20261004.md.

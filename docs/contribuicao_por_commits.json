@@ -1,78 +1,95 @@
 {
-  "basis": "origin/main 5998f0752344d151703689974d4e3a99eda383c5, consultada em 03/10/2026; pacote de fechamento preparado nesta conversa, ainda não integrado à main",
+  "basis": "origin/main e3b12d7685366e25551cbcf9bcde51a5c1b60dee, consultada em 04/10/2026; atualização documental com resultados de teste preparada nesta conversa.",
   "percentages": {
-    "carlos": 60,
-    "raul": 40
+    "carlos": 50,
+    "raul": 50,
+    "rilari": 0
   },
-  "status": "proposta_para_revisao_e_assinatura_dos_autores",
-  "percentage_method": "Estimativa qualitativa do escopo documentado: dados/EDA/splits/textura/pré-processamento/CV/ablação/OOF/documentação para Daniel; HOG/modelos/ajuste/intensidade/comparação/integração para Raul. Não representa horas medidas, contagem de linhas ou acordo já confirmado por Raul.",
+  "status": "documento_recebido_com_assinaturas_de_daniel_e_raul_pendente_rilari",
+  "percentage_method": "Proposta de divisão equivalente entre Carlos Daniel e Raul, considerando suas entregas complementares essenciais no GitHub e o apoio de Raul a todas as atividades de Daniel, confirmado por Daniel. O Anexo A exige atividades concretas, soma de 100% e um R por linha; não atribui pesos por tarefa nem transforma commits ou R em percentual. Os 50%/50% são uma avaliação qualitativa para revisão e assinatura pela equipe, não uma medição de esforço nem um acordo já confirmado por Raul.",
   "activities": {
     "carlos": "Dados e EDA; auditoria de rótulos/imagens e proteção de data/raw.\nAmostra de 4.000 IDs e splits 2.800/600/600 (semente 42).\nPré-processamento comum, LBP/GLCM e matrizes alinhadas.\nCV, ablação, análise OOF, figuras/casos e testes do protocolo.\nNotebooks, README, rascunho/SBC e reprodução em ambiente limpo.",
-    "raul": "Estrutura inicial do repositório e baseline HOG + SVR.\nExtração HOG, ajuste do SVR e comparação SVR/RF/GB.\nDescritor de intensidade e baseline da média do treino.\nScripts de comparação entre famílias e análise de erro.\nIntegração do pré-processamento comum e documentação no README."
+    "raul": "Estrutura inicial, HOG e integração do pré-processamento.\nAjuste do SVR; comparação SVR/RF/GB nas três famílias.\nIntensidade e baseline da média do treino.\nBland-Altman, dispersão e erros por faixa etária.\nAvaliação final das 600 imagens de teste e tabelas.\nApoio a todas as atividades de Carlos Daniel, incluindo dados, EDA, splits, textura, CV/ablação, OOF, redação, formatação e reprodução.",
+    "rilari": "Nenhuma atividade realizada. As atividades inicialmente atribuídas foram redistribuídas entre Carlos Daniel e Raul."
   },
   "matrix": [
     [
       "R",
-      "A"
-    ],
-    [
-      "R",
+      "A",
       "-"
     ],
     [
       "R",
+      "A",
       "-"
     ],
     [
       "R",
-      "A"
+      "A",
+      "-"
+    ],
+    [
+      "R",
+      "A",
+      "-"
     ],
     [
       "A",
-      "R"
+      "R",
+      "-"
     ],
     [
       "A",
-      "R"
-    ],
-    [
-      "R",
-      "A"
-    ],
-    [
-      "R",
-      "A"
-    ],
-    [
-      "R",
-      "A"
-    ],
-    [
-      "R",
-      "A"
-    ],
-    [
       "R",
       "-"
     ],
     [
       "R",
-      "A"
+      "A",
+      "-"
     ],
     [
+      "A",
       "R",
-      "A"
+      "-"
     ],
     [
+      "A",
       "R",
       "-"
     ],
     [
       "R",
-      "A"
+      "A",
+      "-"
+    ],
+    [
+      "R",
+      "A",
+      "-"
+    ],
+    [
+      "R",
+      "A",
+      "-"
+    ],
+    [
+      "R",
+      "A",
+      "-"
+    ],
+    [
+      "R",
+      "A",
+      "-"
+    ],
+    [
+      "R",
+      "A",
+      "-"
     ]
   ],
-  "notes": "Proposta baseada nos commits e nos arquivos preparados em 03/10/2026.\nPercentuais estimados por escopo, sem medição de horas de trabalho.\nRevisar atividades, papéis e percentuais em equipe antes de assinar.\nInstituição/campus e cidade não identificados nos registros consultados.",
+  "notes": "As atividades inicialmente atribuídas a Rílari Maia Castelo não tiveram retorno ou entrega. Carlos Daniel Reis da Silva e Raul Ferreira Holanda decidiram redistribuí-las e executá-las entre si. Raul também apoiou todas as atividades de Carlos Daniel. Os três integrantes foram mantidos conforme orientação do professor. Daniel 50%, Raul 50% e Rílari 0% constam no PDF recebido, assinado por Daniel e Raul; falta a assinatura de Rílari.",
   "commits": {
     "carlos": {
       "8f7e3f8": "auditoria e proteção dos dados",
@@ -82,7 +99,8 @@
       "2617a14": "pré-processamento comum",
       "6aac07e": "notebook e entrega da textura",
       "d80f075": "CV, ablação, análise OOF, figuras, rascunho e testes",
-      "264e253": "instruções neutras dos notebooks"
+      "264e253": "instruções neutras dos notebooks",
+      "9857a1c": "reprodução verificada e artigo SBC"
     },
     "raul": {
       "335fe98": "criação do repositório",
@@ -92,15 +110,73 @@
       "8684a62": "ajuste do SVR",
       "bf48dd8": "HOG com pré-processamento comum e comparação dos modelos",
       "8885518": "documentação README",
-      "35c850d": "intensidade, análise de erro e comparação das três famílias"
-    }
+      "35c850d": "intensidade, análise de erro e comparação das três famílias",
+      "e3b12d7": "avaliação final no teste"
+    },
+    "rilari": {}
   },
   "limits": [
     "Commits identificam quem registrou o trabalho, mas não comprovam toda a colaboração realizada fora do Git.",
     "R indica o papel principal proposto na categoria; não exclui autoria de subtarefas por outro integrante. Raul tem R na extração conjunta por HOG/intensidade; Daniel é o responsável pela textura.",
     "Referências e redação inicial estão no rascunho versionado por Daniel; não foram localizados fichamentos formais nem confirmação de leitura integral de cada trabalho.",
-    "Formatação SBC e reprodução limpa foram preparadas no pacote atual; não são apresentadas como commits já integrados ao GitHub.",
-    "Os traços na matriz indicam ausência de contribuição localizada nos registros consultados, sujeita a revisão dos autores.",
-    "Afiliação acadêmica, assinaturas e respectivas datas não podem ser inferidas dos commits."
-  ]
+    "Os traços de Rílari refletem o relato explícito de ausência de participação. A confirmação de apoio de Raul por Carlos Daniel complementa as evidências dos commits.",
+    "Afiliação acadêmica, assinaturas e respectivas datas não podem ser inferidas dos commits.",
+    "0% de Rílari e ausência de atividades vêm do relato de Daniel, não apenas da ausência de commits. E-mail informado por Daniel; matrícula obtida do identificador desse endereço; assinaturas em branco."
+  ],
+  "team_instruction": "Orientação do professor informada por Daniel em 04/10/2026: manter todos os integrantes.",
+  "rilari_identification": {
+    "name": "Rílari Maia Castelo",
+    "email": "2023010247@unicatolicaquixada.edu.br",
+    "registration": "2023010247",
+    "registration_source": "Identificador do e-mail institucional fornecido por Daniel em 04/10/2026."
+  },
+  "redistribution": {
+    "source": "Relato de Carlos Daniel em 04/10/2026 nesta conversa.",
+    "statement": "Rílari não deu retorno das atividades destinadas a ela. Carlos Daniel e Raul decidiram dividir entre si as atividades inicialmente atribuídas a Rílari.",
+    "percentage_agreement": "Os percentuais 50%/50%/0% constam no PDF recebido com assinaturas de Carlos Daniel e Raul. A assinatura de Rílari permanece pendente."
+  },
+  "raul_support_confirmation": {
+    "source": "Carlos Daniel, nesta conversa, 04/10/2026: ele deu apoio em tudo que eu fiz também.",
+    "scope": "Apoio de Raul a todas as atividades realizadas por Carlos Daniel, inclusive às desenvolvidas fora dos commits de Raul.",
+    "matrix_changes": "Todas as linhas lideradas por Carlos Daniel passam a ter A para Raul. Raul tem R na comparação de experimentos e análise de erro; Carlos Daniel tem A nessas categorias pela CV/ablação e OOF. O R por categoria não exclui responsabilidade principal em subtarefas."
+  },
+  "enunciado_basis": {
+    "source": "TP1-baseline-rsna-turma788.pdf, Anexo A, páginas 7 e 8.",
+    "requirements": [
+      "Atividades concretas por integrante.",
+      "Percentuais somando 100%.",
+      "Exatamente um R por atividade; A indica apoio.",
+      "Registro da redistribuição em A.3 e assinaturas de todos."
+    ],
+    "percentage_limits": "Não define fórmula, pesos por tarefa ou equivalência entre número de commits/R e percentuais.",
+    "github_deliverables": {
+      "carlos": [
+        "Auditoria, EDA, amostra e splits congelados",
+        "Textura LBP/GLCM e pré-processamento comum",
+        "CV, ablação e análise OOF",
+        "Figuras, notebooks, artigo SBC e reprodução limpa"
+      ],
+      "raul": [
+        "Criação do repositório, HOG e integração",
+        "Treinamento e ajuste de SVR/RF/GB",
+        "Intensidade, baseline e comparação das famílias",
+        "Bland-Altman, dispersão, erro por idade e teste final"
+      ]
+    },
+    "support_basis": "Relato explícito de Carlos Daniel de apoio de Raul a todas as suas atividades; complementa os commits."
+  },
+  "received_contribution": {
+    "signed_by": [
+      "Carlos Daniel Reis da Silva",
+      "Raul Ferreira Holanda"
+    ],
+    "pending_signature": "Rílari Maia Castelo",
+    "sha256": "7fdc936a55731b8b94d0cc2208a4a8a7535ec8f4739571d5a639fd3b2afb3582",
+    "percentages": [
+      50,
+      50,
+      0
+    ],
+    "note": "O formulário versionado é a cópia sem assinaturas. O PDF recebido permanece intacto para o pacote do AVA."
+  }
 }
